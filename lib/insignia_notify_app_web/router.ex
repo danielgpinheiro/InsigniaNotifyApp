@@ -14,6 +14,12 @@ defmodule InsigniaNotifyAppWeb.Router do
     plug :accepts, ["json"]
   end
 
+  scope "/", InsigniaNotifyAppWeb do
+    pipe_through :browser
+
+    get "/", PageController, :home
+  end
+
   scope "/api", InsigniaNotifyAppWeb do
     pipe_through :api
 
