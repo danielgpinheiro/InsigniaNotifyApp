@@ -22,7 +22,16 @@ defmodule InsigniaNotifyAppWeb.Shared.Header.HeaderComponent do
           <!-- <i class="material-symbols-rounded !text-[24px] text-white">notifications_off</i> -->
         </button>
 
-        <button class="flex items-center justify-center w-[64px] h-[64px]" phx-click={JS.toggle(to: "#account-menu", in: {"ease-out duration-150", "opacity-0", "opacity-100"}, out: {"ease-out duration-150", "opacity-100", "opacity-0"})}>
+        <button
+          class="flex items-center justify-center w-[64px] h-[64px]"
+          phx-click={
+            JS.toggle(
+              to: "#account-menu",
+              in: {"ease-out duration-150", "opacity-0", "opacity-100"},
+              out: {"ease-out duration-150", "opacity-100", "opacity-0"}
+            )
+          }
+        >
           <i class="material-symbols-rounded !text-[24px] text-white">account_circle</i>
         </button>
       </div>
