@@ -51,4 +51,8 @@ defmodule InsigniaNotifyAppWeb.LoginLive do
   def mount(_params, _session, socket) do
     {:ok, socket}
   end
+
+  def handle_event("notification-params", _, socket) do
+    {:noreply, socket}
+  end
 end

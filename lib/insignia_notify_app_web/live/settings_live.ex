@@ -2,13 +2,18 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
   use InsigniaNotifyAppWeb, :live_view
 
   alias Phoenix.LiveView.JS
+  alias InsigniaNotifyAppWeb.Shared.Notification.RequestNotificationPermissionComponent
 
   def render(assigns) do
     ~H"""
     <section>
       <.header />
 
-      <.request_notification />
+      <.live_component
+        module={RequestNotificationPermissionComponent}
+        id={:request_notification}
+        params={assigns}
+      />
 
       <div class="w-[95%] lg:w-[1140px] bg-gray-700 mt-20 mx-auto rounded p-2 flex flex-col">
         <button
@@ -67,5 +72,10 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
 
   def mount(_params, _session, socket) do
     {:ok, socket}
+  end
+
+  def handle_event("notification-params", %{"params" => params}, socket) do
+    send_update(RequestNotificationPermissionComponent, id: :request_notification, params: params)
+    {:noreply, socket}
   end
 end

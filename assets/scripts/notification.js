@@ -1,39 +1,66 @@
 const toastOptions = {
-  duration: 6000,
+  duration: 3000,
   newWindow: true,
   gravity: "top",
   position: "right",
-  stopOnFocus: true,
   style: {
     background: "linear-gradient(135deg, #BC170F, #E84753)",
     borderRadius: "6px",
   },
 };
 
-export const notificationObject = window.Notification;
-export const isIOSButNotInstalled =
-  "serviceWorker" in navigator && window.navigator.standalone === false;
-export let permission = null;
+let self;
+let interval;
+
+const isSupported = () =>
+  "Notification" in window &&
+  "serviceWorker" in navigator &&
+  "PushManager" in window;
+
+const pushEvent = () => {
+  const isIOSButNotInstalled =
+    "serviceWorker" in navigator && window.navigator.standalone === false;
+  const permission = isSupported() ? Notification.permission : "";
+
+  const notification = {
+    isIOSButNotInstalled: isIOSButNotInstalled,
+    permission: permission,
+  };
+
+  if (window.location.pathname !== "/login") {
+    self.pushEvent("notification-params", { params: notification });
+  }
+};
 
 export const displayNotification = {
   mounted() {
     window.addEventListener("showNotification", (event) => {
       checkPermissions(event);
     });
-    window.addEventListener("requestNotificationPermission", (event) => {
-      requestNotificationPermission(event);
+    window.addEventListener("requestNotificationPermission", () => {
+      requestNotificationPermission();
     });
+
+    self = this;
+
+    pushEvent();
+
+    interval = setInterval(() => {
+      pushEvent();
+    }, 1000);
+  },
+
+  destroyed() {
+    clearInterval(interval);
   },
 };
 
 const requestNotificationPermission = () => {
   if (window.Notification && Notification.permission === "granted") {
-    permission = Notification.permission;
     console.info("granted");
   } else if (window.Notification && Notification.permission !== "denied") {
     Notification.requestPermission((status) => {
       if (status === "granted") {
-        permission = Notification.permission;
         console.info("granted");
       } else {
         Toastify({
@@ -50,13 +77,13 @@ const requestNotificationPermission = () => {
   }
 };
 
-const checkPermissions = () => {
+const checkPermissions = (event) => {
   if (window.Notification && Notification.permission === "granted") {
-    notification();
+    notification(event);
   } else if (window.Notification && Notification.permission !== "denied") {
     Notification.requestPermission((status) => {
       if (status === "granted") {
-        notification();
+        notification(event);
       } else {
         Toastify({
           text: "You denied or dismissed permissions to notifications.",
@@ -72,7 +99,7 @@ const checkPermissions = () => {
   }
 };
 
-const notification = () => {
+const notification = (event) => {
   const notifBody = `Body`;
   const notifImg = `https://r2-cdn.insignia.live/Shl9AF66oSfXRmcAdNj580DyHtpLfm8ETKBnnD1i.png`;
   const options = {

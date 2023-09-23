@@ -19,7 +19,6 @@ defmodule InsigniaNotifyAppWeb do
 
   alias InsigniaNotifyAppWeb.Shared.Footer
   alias InsigniaNotifyAppWeb.Shared.Header
-  alias InsigniaNotifyAppWeb.Shared.Notification
 
   def static_paths,
     do: ~w(assets fonts images favicon.ico robots.txt manifest.json sw.js sounds icons)
@@ -94,7 +93,6 @@ defmodule InsigniaNotifyAppWeb do
       # Custom Components
       import Footer.FooterComponent
       import Header.HeaderComponent
-      import Notification.RequestNotificationPermissionComponent
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
