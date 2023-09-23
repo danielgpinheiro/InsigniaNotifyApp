@@ -17,7 +17,10 @@ defmodule InsigniaNotifyAppWeb do
   those modules here.
   """
 
-  def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
+  alias InsigniaNotifyAppWeb.Shared.Footer
+  alias InsigniaNotifyAppWeb.Shared.Header
+
+  def static_paths, do: ~w(assets fonts images favicon.ico robots.txt manifest.json sw.js sounds)
 
   def router do
     quote do
@@ -86,6 +89,8 @@ defmodule InsigniaNotifyAppWeb do
       # Core UI components and translation
       import InsigniaNotifyAppWeb.CoreComponents
       import InsigniaNotifyAppWeb.Gettext
+      import Footer.FooterComponent
+      import Header.HeaderComponent
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS

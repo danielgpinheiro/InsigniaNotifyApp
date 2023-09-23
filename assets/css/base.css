@@ -1,0 +1,138 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0&display=swap');
+
+:root {
+  /*** ----------- COLORS BASE ------------ ***/
+  /* ---- COLOR_PRIMARY ---- */
+  --color-primary-first-main: #d62300;
+  --color-primary-first-light: #ff4000;
+  --color-primary-first-dark: #a81c00;
+  --color-primary-first-darker: #7a1400;
+
+  --color-primary-second-main: #ff8732;
+  --color-primary-second-light: #ffa665;
+  --color-primary-second-dark: #d46a13;
+  --color-primary-second-darker: #b55909;
+
+  --color-primary-third-main: #502314;
+  --color-primary-third-light: #7d371f;
+  --color-primary-third-dark: #38190e;
+  --color-primary-third-darker: #210f08;
+
+  /* ---- COLOR_SECONDARY ---- */
+  --color-secondary-first-main: #f5ebdc;
+  --color-secondary-first-light: #fcfaf6;
+  --color-secondary-first-dark: #d9d0b9;
+  --color-secondary-first-darker: #bdb59d;
+
+  --color-secondary-second-main: #198737;
+  --color-secondary-second-light: #1d993e;
+  --color-secondary-second-dark: #14692a;
+  --color-secondary-second-darker: #0f4f20;
+
+  --color-secondary-third-main: #ffaa00;
+  --color-secondary-third-light: #ffd400;
+  --color-secondary-third-dark: #cf8a00;
+  --color-secondary-third-darker: #b87a00;
+
+  /* ---- COLORS INFO ----- */
+  --color-info-main: #1890ff;
+  --color-info-light: #74caff;
+  --color-info-dark: #0c53b7;
+  --color-info-darker: #04297a;
+
+  /* ---- COLORS SUCCESS ----- */
+  --color-success-main: #54d62c;
+  --color-success-light: #aaf27f;
+  --color-success-dark: #229a16;
+  --color-success-darker: #08660d;
+
+  /* ---- COLORS WARNING ----- */
+  --color-warning-main: #ffc107;
+  --color-warning-light: #ffe16a;
+  --color-warning-dark: #d19e06;
+  --color-warning-darker: #b38705;
+
+  /* ---- COLORS DANGER ----- */
+  --color-danger-main: #ff4842;
+  --color-danger-light: #ffa48d;
+  --color-danger-dark: #c93934;
+  --color-danger-darker: #a12e2a;
+
+  /* ---- COLORS NEUTRAL ----- */
+  --color-neutral-black: #000000;
+  --color-neutral-800: #212b36;
+  --color-neutral-700: #454f5b;
+  --color-neutral-600: #637381;
+  --color-neutral-500: #919eab;
+  --color-neutral-400: #c4cdd5;
+  --color-neutral-300: #dfe3e8;
+  --color-neutral-200: #f4f6f8;
+  --color-neutral-100: #f9fafb;
+  --color-neutral-white: #ffffff;
+
+  /* ---- COLORS BACKGROUND ----- */
+  --color-background-paper: #fefefe;
+  --color-background-default: #f8f9fa;
+
+  /*** ----------- TYPOGRAPHY BASE ------------ ***/
+  /* ---- FONT-FAMILY ----- */
+  --font-system-secondary: 'Chakra Petch', 'Roboto', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  --font-system-primary: 'Roboto', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  --font-system-icons: 'Roboto', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+
+  /* ---- FONT-SIZE ----- */
+  --font-size-nano: 10px;
+  --font-size-small: 12px;
+  --font-size-standard: 14px;
+  --font-size-medium: 16px;
+  --font-size-large: 20px;
+  --font-size-big: 24px;
+  --font-size-giant: 32px;
+
+  /* ---- FONT-WEIGHT ----- */
+  --font-weight-nano: 100;
+  --font-weight-small: 300;
+  --font-weight-standard: 400;
+  --font-weight-medium: 500;
+  --font-weight-large: 700;
+  --font-weight-big: 900;
+
+  /* ---- LINE-HEIGHT ----- */
+  --line-height-default: 100%;
+  --line-height-small: 120%;
+  --line-height-medim: 136%;
+  --line-height-tall: 144%;
+
+  /* ---- LETTER-SPACING ----- */
+  --letter-spacing-short: 2%;
+  --letter-spacing-long: 4%;
+
+  /* ---- LETTER CASE ----- */
+  --letter-case-up: uppercase;
+
+  /*** ----------- BORDER STYLES ------------ ***/
+  /* ---- BORDER-WIDTH ---- */
+  --border-width-none: none;
+  --border-width-small: 1px;
+  --border-width-none: 1.5px;
+  --border-width-thick: 2px;
+  --border-width-heavy: 4px;
+
+  /* ---- BORDER-RADIUS ---- */
+  --border-radius-none: none;
+  --border-radius-nano: 2px;
+  --border-radius-small: 4px;
+  --border-radius-medium: 8px;
+  --border-radius-large: 16px;
+  --border-radius-pill: 50%;
+
+  /*** ----------- SHADOW STYLES ------------ ***/
+  /* ---- SHADOW ---- */
+  --shadow-level-1: 0px 8px 16px -8px rgba(0, 0, 0, 0.15);
+  --shadow-level-2: 0px 20px 44px -18px rgba(0, 0, 0, 0.16);
+  --shadow-level-3: 0px 36px 48px -20px rgba(0, 0, 0, 0.16);
+  --shadow-level-4: 0px 0px 48px -5px rgb(0 0 0 / 14%);
+}

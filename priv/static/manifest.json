@@ -1,0 +1,17 @@
+{
+  "lang": "en-us",
+  "name": "Insignia Notify",
+  "short_name": "Insignia Notify",
+  "description": "Web App that shows when there are new matches created in Insignia, which is a free replacement for Microsoft's servers for the original Xbox console. ",
+  "start_url": "/",
+  "background_color": "#8dc103",
+  "theme_color": "#8dc103",
+  "orientation": "any",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/icon512.png",
+      "sizes": "512x512"
+    }
+  ]
+}

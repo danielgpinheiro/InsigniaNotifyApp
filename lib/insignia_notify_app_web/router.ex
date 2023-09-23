@@ -18,6 +18,10 @@ defmodule InsigniaNotifyAppWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+
+    live "/games", GamesLive, :games
+    live "/settings", SettingsLive, :settings
+    live "/login", LoginLive, :login
   end
 
   scope "/api", InsigniaNotifyAppWeb do
