@@ -8,6 +8,8 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
     <section>
       <.header />
 
+      <.request_notification />
+
       <div class="w-[95%] lg:w-[1140px] bg-gray-700 mt-20 mx-auto rounded p-2 flex flex-col">
         <button
           class="flex items-center w-[100px] h-[48px] hover:bg-gray-600 rounded"

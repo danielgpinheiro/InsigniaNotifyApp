@@ -51,7 +51,7 @@ liveSocket.connect();
 window.liveSocket = liveSocket;
 
 // Service Worker Register
-window.addEventListener("load", (event) => {
+window.addEventListener("load", () => {
   if ("serviceWorker" in navigator && "PushManager" in window) {
     console.info("Service Worker and Push is supported");
 

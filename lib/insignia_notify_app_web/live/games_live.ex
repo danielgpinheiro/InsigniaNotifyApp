@@ -4,7 +4,7 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
   def render(assigns) do
     ~H"""
     <section>
-      <.header>Login</.header>
+      <.header />
       <.footer />
     </section>
     """
