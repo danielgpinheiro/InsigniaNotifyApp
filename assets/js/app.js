@@ -74,3 +74,8 @@ window.addEventListener("load", () => {
 window.addEventListener("teste", (event) => {
   console.log("TESTEEEE", event);
 });
+
+window.addEventListener("toggleAccordion", (event) => {
+  const accordion = event.target.closest('.accordion')
+  accordion.classList.toggle('active')
+})

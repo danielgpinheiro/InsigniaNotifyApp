@@ -1,4 +1,5 @@
 @import "./base.css";
+@import "./game_list_header_component.css";
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
@@ -318,5 +319,5 @@ a:hover {
 }
 
 .slideon input:checked ~ .slideon-slider {
-  background-color: #8dc103;
+  background-color: #8dc103 !important;
 }

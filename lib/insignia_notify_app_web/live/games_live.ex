@@ -1,8 +1,9 @@
 defmodule InsigniaNotifyAppWeb.GamesLive do
   use InsigniaNotifyAppWeb, :live_view
 
-  alias Phoenix.LiveView.JS
   alias InsigniaNotifyAppWeb.Shared.Notification.RequestNotificationPermissionComponent
+  alias InsigniaNotifyAppWeb.Shared.GameList.GameListComponent
+  alias InsigniaNotifyAppWeb.Shared.Filter.FilterComponent
 
   def render(assigns) do
     ~H"""
@@ -15,7 +16,11 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
         params={assigns}
       />
 
-      <div>abc</div>
+      <.live_component module={FilterComponent} id={:filter_form} />
+
+      <.live_component module={GameListComponent} id={:game_list} />
+
+      <.footer />
     </section>
     """
   end

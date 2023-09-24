@@ -58,14 +58,6 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
           </button>
         </div>
       </div>
-
-      <button
-        class="flex items-center h-full w-full hover:bg-gray-600"
-        phx-click={JS.dispatch("showNotification", detail: "teste123qadwa")}
-      >
-        <i class="material-symbols-rounded text-white w-10 text-center">logout</i>
-        <span class="text-white pl-2">Teste</span>
-      </button>
     </section>
     """
   end

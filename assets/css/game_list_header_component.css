@@ -1,0 +1,19 @@
+.accordion {
+  &.active {
+    .expand-more {
+      display: none !important;
+    }
+
+    .expand-less {
+      display: block !important;
+    }
+
+    .accordion-content {
+      max-height: 305px;
+
+      @media all and (max-width: 768px) {
+        max-height: 800px;
+      }
+    }
+  }
+}
