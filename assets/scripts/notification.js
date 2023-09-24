@@ -10,7 +10,6 @@ const toastOptions = {
 };
 
 let self;
-let interval;
 
 const isSupported = () =>
   "Notification" in window &&
@@ -44,20 +43,13 @@ export const displayNotification = {
     self = this;
 
     pushEvent();
-
-    interval = setInterval(() => {
-      pushEvent();
-    }, 1000);
-  },
-
-  destroyed() {
-    clearInterval(interval);
   },
 };
 
 const requestNotificationPermission = () => {
   if (window.Notification && Notification.permission === "granted") {
     console.info("granted");
+    pushEvent();
   } else if (window.Notification && Notification.permission !== "denied") {
     Notification.requestPermission((status) => {
       if (status === "granted") {
@@ -68,12 +60,16 @@ const requestNotificationPermission = () => {
           ...toastOptions,
         }).showToast();
       }
+
+      window.location.reload();
     });
   } else {
     Toastify({
       text: "You denied permissions to notifications. Please go to your browser or phone setting to allow notifications.",
       ...toastOptions,
     }).showToast();
+
+    pushEvent();
   }
 };
 
@@ -90,6 +86,8 @@ const checkPermissions = (event) => {
           ...toastOptions,
         }).showToast();
       }
+
+      window.location.reload();
     });
   } else {
     Toastify({
@@ -100,6 +98,8 @@ const checkPermissions = (event) => {
 };
 
 const notification = (event) => {
+  pushEvent();
+
   const notifBody = `Body`;
   const notifImg = `https://r2-cdn.insignia.live/Shl9AF66oSfXRmcAdNj580DyHtpLfm8ETKBnnD1i.png`;
   const options = {
