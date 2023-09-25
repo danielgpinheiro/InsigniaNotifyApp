@@ -7,7 +7,7 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
   def render(assigns) do
     ~H"""
     <section>
-      <.header />
+      <.header current_user={@current_user} />
 
       <.live_component
         module={RequestNotificationPermissionComponent}

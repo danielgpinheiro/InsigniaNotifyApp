@@ -1,6 +1,12 @@
 defmodule InsigniaNotifyAppWeb.Router do
   use InsigniaNotifyAppWeb, :router
 
+  (
+    alias InsigniaNotifyAppWeb.SessionHooks.AssignUser
+    alias InsigniaNotifyAppWeb.SessionHooks.RequireUser
+    import InsigniaNotifyAppWeb.Session, only: [fetch_current_user: 2]
+  )
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,20 +14,39 @@ defmodule InsigniaNotifyAppWeb.Router do
     plug :put_root_layout, html: {InsigniaNotifyAppWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_user
   end
 
   pipeline :api do
     plug :accepts, ["json"]
   end
 
+  # HTTP controller routes
   scope "/", InsigniaNotifyAppWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    post "/session", Session, :create
+    delete "/session", Session, :delete
+  end
 
-    live "/games", GamesLive, :games
-    live "/settings", SettingsLive, :settings
-    live "/login", LoginLive, :login
+  # Unprotected LiveViews
+  live_session :guest, on_mount: [AssignUser] do
+    scope "/", InsigniaNotifyAppWeb do
+      pipe_through :browser
+
+      live "/login", LoginLive
+    end
+  end
+
+  # Protected LiveViews
+  live_session :authenticated, on_mount: [AssignUser, RequireUser] do
+    scope "/", InsigniaNotifyAppWeb do
+      pipe_through :browser
+
+      live "/", GamesLive, :games
+      live "/games", GamesLive, :games
+      live "/settings", SettingsLive, :settings
+    end
   end
 
   scope "/api", InsigniaNotifyAppWeb do

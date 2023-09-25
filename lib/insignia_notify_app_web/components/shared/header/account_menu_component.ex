@@ -1,7 +1,6 @@
 defmodule InsigniaNotifyAppWeb.Shared.Header.AccountMenuComponent do
   use Phoenix.Component
-
-  alias Phoenix.LiveView.JS
+  use InsigniaNotifyAppWeb, :verified_routes
 
   def account_menu(assigns) do
     ~H"""
@@ -11,29 +10,39 @@ defmodule InsigniaNotifyAppWeb.Shared.Header.AccountMenuComponent do
     >
       <li class="h-11 flex items-center border-b-[1px] border-white">
         <i class="material-symbols-rounded text-white w-10 text-center">account_circle</i>
-        <strong class="text-white pl-2">dedelabritos@gmail.com</strong>
+        <strong class="text-white pl-2"><%= @current_user.email %></strong>
       </li>
 
       <li class="h-11">
-        <button
-          class="flex items-center h-full w-full hover:bg-gray-600"
-          phx-click={JS.navigate("/settings")}
+        <.link
+          href={~p"/settings"}
+          class="flex items-center h-full w-full hover:bg-gray-600 !no-underline"
         >
           <i class="material-symbols-rounded text-white w-10 text-center">settings</i>
-          <span class="text-white pl-2">Settings</span>
-        </button>
+          <span class="text-white pl-2">
+            Settings
+          </span>
+        </.link>
       </li>
 
       <li class="h-11">
-        <button
-          class="flex items-center h-full w-full hover:bg-gray-600"
-          phx-click={JS.navigate("/login")}
+        <.link
+          href={~p"/session"}
+          method="delete"
+          class="flex items-center h-full w-full hover:bg-gray-600 !no-underline"
         >
           <i class="material-symbols-rounded text-white w-10 text-center">logout</i>
-          <span class="text-white pl-2">Logout</span>
-        </button>
+          <span class="text-white pl-2">
+            Sign Out
+          </span>
+        </.link>
       </li>
     </ul>
     """
+  end
+
+  def handle_event("sign_out", _, socket) do
+    IO.inspect("awdawadwwdadwdawadwadw")
+    {:noreply, socket}
   end
 end

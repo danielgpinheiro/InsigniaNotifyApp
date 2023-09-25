@@ -20,20 +20,22 @@ import "phoenix_html";
 // Establish Phoenix Socket and LiveView configuration.
 import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
+import {
+  SupportHook,
+  AuthenticationHook,
+  RegistrationHook,
+} from "webauthn_components";
+
 import topbar from "../vendor/topbar";
 
 import { displayNotification } from "../scripts/notification";
-
-let hooks = {};
-
-hooks.displayNotification = displayNotification;
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
-  hooks: hooks,
+  hooks: { SupportHook, AuthenticationHook, RegistrationHook, displayNotification },
 });
 
 // Show progress bar on live navigation and form submits
