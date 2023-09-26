@@ -29,13 +29,14 @@ import {
 import topbar from "../vendor/topbar";
 
 import { displayNotification } from "../scripts/notification";
+import { playSound } from "../scripts/sound";
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
-  hooks: { SupportHook, AuthenticationHook, RegistrationHook, displayNotification },
+  hooks: { SupportHook, AuthenticationHook, RegistrationHook, displayNotification, playSound },
 });
 
 // Show progress bar on live navigation and form submits

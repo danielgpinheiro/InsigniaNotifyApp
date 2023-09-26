@@ -4,8 +4,6 @@ defmodule InsigniaNotifyApp.Settings.Setting do
 
   alias InsigniaNotifyApp.Identity.User
 
-  @required_params [:notification_sound, :user_id]
-
   @primary_key {:id, Ecto.ULID, autogenerate: true}
   @foreign_key_type Ecto.ULID
   schema "notification_settings" do

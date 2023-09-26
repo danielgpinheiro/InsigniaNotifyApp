@@ -49,12 +49,12 @@
           "px-4 py-2 cursor-pointer transition select-none",
           "bg-gray-600 font-semibold",
           "rounted-t-lg rounded-b-lg group-open:rounded-b-none",
-          "group-open:border-b-2 group-open:border-gray-600 "
+          "group-open:border-b-2 group-open:border-gray-600"
         ]}>
           Where's the password?
         </summary>
 
-        <div class="py-4 px-8 text-justify grid gap-2">
+        <div class="p-4 text-justify grid gap-2">
           <p>
             This application uses a new technology that replaces passwords and temporary codes.
           </p>
@@ -87,5 +87,7 @@
       The account is only for saving notification preferences, we will not use your email for spam
       or disclose your data.
     </p>
+
+    <button phx-click={JS.dispatch("playSound", detail: "dadum")}>play</button>
   </div>
 </section>

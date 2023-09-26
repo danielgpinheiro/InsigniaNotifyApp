@@ -1,6 +1,8 @@
-<main class="relative w-full h-[100vh]" phx-hook="displayNotification" id="main">
+<main phx-hook="displayNotification" id="main">
   <.flash kind={:info} flash={@flash} />
   <.flash kind={:error} flash={@flash} />
 
-  <%= @inner_content %>
+  <div phx-hook="playSound" id="inner-content" class="relative w-full h-[100vh]">
+    <%= @inner_content %>
+  </div>
 </main>

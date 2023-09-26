@@ -150,10 +150,6 @@ defmodule InsigniaNotifyApp.Identity do
   """
   @spec create_token(attrs :: map()) :: {:ok, UserToken.t()} | {:error, Changeset.t()}
   def create_token(attrs) do
-    IO.inspect("TTTTTTTTT---")
-    IO.inspect(attrs)
-    # IO.inspect(UserToken.changeset(attrs))
-
     %UserToken{}
     |> UserToken.changeset(attrs)
     |> Repo.insert()
