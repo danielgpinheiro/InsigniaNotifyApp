@@ -1,8 +1,10 @@
 defmodule InsigniaNotifyAppWeb.SettingsLive do
-  alias InsigniaNotifyAppWeb.SettingsController
   use InsigniaNotifyAppWeb, :live_view
 
   alias InsigniaNotifyApp.Identity
+
+  alias InsigniaNotifyApp.Settings.Setting
+  alias InsigniaNotifyAppWeb.SettingsController
 
   alias InsigniaNotifyAppWeb.Shared.Notification.RequestNotificationPermissionComponent
   alias InsigniaNotifyAppWeb.Shared.Header.HeaderComponent
@@ -27,7 +29,7 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
           <span class="text-white pl-2">Back</span>
         </button>
 
-        <div class="w-full lg:w-[50%] flex flex-col p-6">
+        <div class="w-full lg:w-[50%] flex flex-col p-6 relative">
           <h3 class="text-white text-2xl mb-5">Notifications</h3>
 
           <form>
@@ -37,23 +39,33 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
             >
               Notification Sound
             </label>
-            <select
+
+            <.input
               id="notification-sound"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              type="select"
+              options={[
+                "no-sound",
+                "beep",
+                "dadum",
+                "ding",
+                "juntos",
+                "pop-swoosh",
+                "pop",
+                "pristine"
+              ]}
               name="notification-sound"
+              value={@sound}
               phx-change="notification-settings"
             >
-              <option selected>Choose a sound</option>
-              <option value="">No Sound</option>
-              <option value="beep">beep</option>
-              <option value="dadum">dadum</option>
-              <option value="ding">ding</option>
-              <option value="juntos">juntos</option>
-              <option value="pop-swoosh">pop-swoosh</option>
-              <option value="pop">pop</option>
-              <option value="pristine">pristine</option>
-            </select>
+            </.input>
           </form>
+
+          <button
+            class="right-[-20px] bottom-[30px] absolute border-[1px] rounded-full w-8 h-8"
+            phx-click={JS.dispatch("playSound", detail: @sound)}
+          >
+            <i class="material-symbols-rounded text-white text-center">play_arrow</i>
+          </button>
         </div>
 
         <div class="w-full lg:w-[50%] flex flex-col p-6">
@@ -75,7 +87,15 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
   end
 
   def mount(_params, _session, socket) do
-    {:ok, socket}
+    user_id = socket.assigns.current_user.id
+
+    case SettingsController.get_settings_by_user_id(user_id) do
+      {:ok, %Setting{notification_sound: notification_sound}} ->
+        {:ok, socket |> assign(:sound, notification_sound)}
+
+      {:error, _} ->
+        {:ok, socket |> assign(:sound, "beep")}
+    end
   end
 
   def handle_event("notification-params", %{"params" => params}, socket) do
@@ -103,6 +123,6 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
     user_id = socket.assigns.current_user.id
     SettingsController.change_settings(%{user_id: user_id, notification_sound: sound})
 
-    {:noreply, socket}
+    {:noreply, socket |> assign(:sound, sound)}
   end
 end

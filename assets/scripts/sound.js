@@ -10,7 +10,8 @@ const play = (event) => {
   const soundName = event.detail
   const ctx = new AudioContext()
 
-  fetch(`/sounds/${soundName}.mp3`)
+  if (soundName !== "no-sound") {
+    fetch(`/sounds/${soundName}.mp3`)
     .then(data => data.arrayBuffer())
     .then(arrayBuffer => ctx.decodeAudioData(arrayBuffer))
     .then(decodedAudio => {
@@ -21,4 +22,5 @@ const play = (event) => {
     }).catch(e => {
       console.error(`Error playing audio`, e);
     })
+  }
 };

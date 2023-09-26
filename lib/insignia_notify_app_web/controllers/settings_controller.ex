@@ -12,4 +12,8 @@ defmodule InsigniaNotifyAppWeb.SettingsController do
         Settings.update(settings, params)
     end
   end
+
+  def get_settings_by_user_id(user_id) do
+    Settings.get_by(user_id)
+  end
 end

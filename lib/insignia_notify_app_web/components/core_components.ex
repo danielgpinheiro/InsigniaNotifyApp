@@ -321,12 +321,15 @@ defmodule InsigniaNotifyAppWeb.CoreComponents do
 
   def input(%{type: "select"} = assigns) do
     ~H"""
-    <div phx-feedback-for={@name}>
+    <div
+      phx-feedback-for={@name}
+      class="flex item-center text-white font-chakra rounded bg-gray-700 relative"
+    >
       <.label for={@id}><%= @label %></.label>
       <select
         id={@id}
         name={@name}
-        class="mt-2 block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm"
+        class="bg-transparent pr-8 rounded w-full"
         multiple={@multiple}
         {@rest}
       >
