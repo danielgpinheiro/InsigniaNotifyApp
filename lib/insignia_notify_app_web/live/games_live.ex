@@ -4,11 +4,13 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
   alias InsigniaNotifyAppWeb.Shared.Notification.RequestNotificationPermissionComponent
   alias InsigniaNotifyAppWeb.Shared.GameList.GameListComponent
   alias InsigniaNotifyAppWeb.Shared.Filter.FilterComponent
+  alias InsigniaNotifyAppWeb.Shared.Header.HeaderComponent
+  alias InsigniaNotifyAppWeb.Shared.Footer.FooterComponent
 
   def render(assigns) do
     ~H"""
     <section>
-      <.header current_user={@current_user} />
+      <.live_component module={HeaderComponent} id={:header} current_user={@current_user} />
 
       <.live_component
         module={RequestNotificationPermissionComponent}
@@ -20,7 +22,7 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
 
       <.live_component module={GameListComponent} id={:game_list} />
 
-      <.footer />
+      <FooterComponent.footer />
     </section>
     """
   end

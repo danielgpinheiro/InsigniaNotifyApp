@@ -1,5 +1,5 @@
 defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
-  use Phoenix.LiveComponent
+  use InsigniaNotifyAppWeb, :live_component
 
   alias InsigniaNotifyAppWeb.Shared.GameList.GameListHeaderComponent
   alias InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent

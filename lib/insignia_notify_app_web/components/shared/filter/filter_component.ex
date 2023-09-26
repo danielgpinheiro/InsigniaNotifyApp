@@ -1,5 +1,5 @@
 defmodule InsigniaNotifyAppWeb.Shared.Filter.FilterComponent do
-  use Phoenix.LiveComponent
+  use InsigniaNotifyAppWeb, :live_component
 
   alias InsigniaNotifyAppWeb.Shared.Filter.FormComponent
 

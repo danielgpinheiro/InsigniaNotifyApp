@@ -1,7 +1,5 @@
 defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListHeaderComponent do
-  use Phoenix.LiveComponent
-
-  alias Phoenix.LiveView.JS
+  use InsigniaNotifyAppWeb, :live_component
 
   def render(assigns) do
     ~H"""

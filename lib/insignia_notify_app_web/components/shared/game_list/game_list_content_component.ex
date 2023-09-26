@@ -1,5 +1,5 @@
 defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
-  use Phoenix.LiveComponent
+  use InsigniaNotifyAppWeb, :live_component
 
   def render(assigns) do
     ~H"""

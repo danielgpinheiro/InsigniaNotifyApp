@@ -33,6 +33,9 @@ defmodule InsigniaNotifyApp.Identity.UserToken do
   def changeset(%__MODULE__{} = user_token, attrs) do
     fields = __MODULE__.__schema__(:fields) -- [:value]
 
+    IO.inspect("OPPPAAAAAA")
+    IO.inspect(attrs)
+
     user_token
     |> cast(attrs, fields)
     |> put_change(:value, :crypto.strong_rand_bytes(64))

@@ -1,8 +1,8 @@
 defmodule InsigniaNotifyAppWeb.Shared.Header.AccountMenuComponent do
-  use Phoenix.Component
+  use InsigniaNotifyAppWeb, :live_component
   use InsigniaNotifyAppWeb, :verified_routes
 
-  def account_menu(assigns) do
+  def render(assigns) do
     ~H"""
     <ul
       id="account-menu"
@@ -39,10 +39,5 @@ defmodule InsigniaNotifyAppWeb.Shared.Header.AccountMenuComponent do
       </li>
     </ul>
     """
-  end
-
-  def handle_event("sign_out", _, socket) do
-    IO.inspect("awdawadwwdadwdawadwadw")
-    {:noreply, socket}
   end
 end

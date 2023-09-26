@@ -1,10 +1,9 @@
 defmodule InsigniaNotifyAppWeb.Shared.Header.HeaderComponent do
-  use Phoenix.Component
+  use InsigniaNotifyAppWeb, :live_component
 
-  alias Phoenix.LiveView.JS
   alias InsigniaNotifyAppWeb.Shared.Header.AccountMenuComponent
 
-  def header(assigns) do
+  def render(assigns) do
     ~H"""
     <header
       class="flex justify-between items-center lg:h-16 h-14 bg-white fixed top-0 left-0 w-full z-10 shadow-lg"
@@ -36,7 +35,7 @@ defmodule InsigniaNotifyAppWeb.Shared.Header.HeaderComponent do
         </button>
       </div>
 
-      <AccountMenuComponent.account_menu current_user={@current_user} />
+      <.live_component module={AccountMenuComponent} id={:account_menu} current_user={@current_user} />
     </header>
     """
   end

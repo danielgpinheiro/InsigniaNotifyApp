@@ -34,6 +34,8 @@ defmodule InsigniaNotifyAppWeb.Router do
     scope "/", InsigniaNotifyAppWeb do
       pipe_through :browser
 
+      get "/", RedirectController, :index
+
       live "/login", LoginLive
     end
   end
@@ -43,7 +45,6 @@ defmodule InsigniaNotifyAppWeb.Router do
     scope "/", InsigniaNotifyAppWeb do
       pipe_through :browser
 
-      live "/", GamesLive, :games
       live "/games", GamesLive, :games
       live "/settings", SettingsLive, :settings
     end

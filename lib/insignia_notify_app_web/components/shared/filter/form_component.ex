@@ -1,5 +1,5 @@
 defmodule InsigniaNotifyAppWeb.Shared.Filter.FormComponent do
-  use Phoenix.LiveComponent
+  use InsigniaNotifyAppWeb, :live_component
 
   def render(assigns) do
     ~H"""

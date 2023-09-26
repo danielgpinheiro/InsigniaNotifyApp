@@ -24,9 +24,8 @@
         </div>
       </div>
 
-      <div class="flex flex-col items-center">
+      <div class={"flex flex-col items-center #{if @form.source.valid? == false do 'pointer-events-none grayscale' end}"}>
         <.live_component
-          disabled={@form.source.valid? == false}
           module={AuthenticationComponent}
           id="authentication-component"
           display_text="Sign In"
@@ -35,7 +34,6 @@
         />
 
         <.live_component
-          disabled={@form.source.valid? == false}
           module={RegistrationComponent}
           id="registration-component"
           app={InsigniaNotifyApp}
