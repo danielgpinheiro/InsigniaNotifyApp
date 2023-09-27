@@ -18,9 +18,9 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
         params={assigns}
       />
 
-      <.live_component module={FilterComponent} id={:filter_form} />
+      <.live_component module={FilterComponent} id={:filter_form} current_user={@current_user} />
 
-      <.live_component module={GameListComponent} id={:game_list} />
+      <.live_component module={GameListComponent} id={:game_list} current_user={@current_user} />
 
       <FooterComponent.footer />
     </section>

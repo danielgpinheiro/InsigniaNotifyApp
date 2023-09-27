@@ -1,4 +1,4 @@
-defmodule InsigniaNotifyAppWeb.Session do
+defmodule InsigniaNotifyAppWeb.SessionController do
   @moduledoc """
   Manages user-authenticated sessions.
   """

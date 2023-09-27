@@ -4,7 +4,7 @@ defmodule InsigniaNotifyAppWeb.Router do
   (
     alias InsigniaNotifyAppWeb.SessionHooks.AssignUser
     alias InsigniaNotifyAppWeb.SessionHooks.RequireUser
-    import InsigniaNotifyAppWeb.Session, only: [fetch_current_user: 2]
+    import InsigniaNotifyAppWeb.SessionController, only: [fetch_current_user: 2]
   )
 
   pipeline :browser do
@@ -25,8 +25,8 @@ defmodule InsigniaNotifyAppWeb.Router do
   scope "/", InsigniaNotifyAppWeb do
     pipe_through :browser
 
-    post "/session", Session, :create
-    delete "/session", Session, :delete
+    post "/session", SessionController, :create
+    delete "/session", SessionController, :delete
   end
 
   # Unprotected LiveViews
