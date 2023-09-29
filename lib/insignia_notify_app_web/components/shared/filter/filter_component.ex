@@ -16,7 +16,7 @@ defmodule InsigniaNotifyAppWeb.Shared.Filter.FilterComponent do
 
       <div class="flex items-center justify-between lg:flex-row flex-col">
         <div class="lg:mb-0 mb-6 text-center">
-          <span class="text-gray-300 font-chakra mr-5">
+          <%!-- <span class="text-gray-300 font-chakra mr-5">
             <strong><%= @registered_users %></strong> Registered Users
           </span>
           <span class="text-gray-300 font-chakra mr-5">
@@ -24,7 +24,7 @@ defmodule InsigniaNotifyAppWeb.Shared.Filter.FilterComponent do
           </span>
           <span class="text-gray-300 font-chakra">
             <strong><%= @games_supported %></strong> Games Supported
-          </span>
+          </span> --%>
         </div>
 
         <form class="flex item-center text-white font-chakra rounded bg-gray-700 relative">
@@ -50,14 +50,6 @@ defmodule InsigniaNotifyAppWeb.Shared.Filter.FilterComponent do
   end
 
   def mount(socket) do
-    if connected?(socket), do: tick()
-
-    update_stats(socket)
-  end
-
-  def update(%{action: :tick}, socket) do
-    tick()
-
     update_stats(socket)
   end
 
@@ -94,34 +86,29 @@ defmodule InsigniaNotifyAppWeb.Shared.Filter.FilterComponent do
   end
 
   defp update_stats(socket) do
-    case GamesController.get_stats() do
-      {:ok,
-       %Statistic{
-         registered_users: registered_users,
-         games_supported: games_supported,
-         users_online_now: users_online_now
-       }} ->
-        {
-          :ok,
-          socket
-          |> assign(registered_users: registered_users)
-          |> assign(games_supported: games_supported)
-          |> assign(users_online_now: users_online_now)
-        }
+    IO.inspect(GamesController.get_stats())
+    {:ok, socket}
+    # case GamesController.get_stats() do
+    #   {:ok,
+    #    %Statistic{
+    #      registered_users: registered_users,
+    #      games_supported: games_supported,
+    #      users_online_now: users_online_now
+    #    }} ->
+    #     {
+    #       :ok,
+    #       socket
+    #       |> assign(registered_users: registered_users)
+    #       |> assign(games_supported: games_supported)
+    #       |> assign(users_online_now: users_online_now)
+    #     }
 
-      {:error, _} ->
-        {:ok,
-         socket
-         |> assign(registered_users: "-")
-         |> assign(games_supported: "-")
-         |> assign(users_online_now: "-")}
-    end
-  end
-
-  defp tick() do
-    {_, interval_time_string} = Application.get_env(:insignia_notify_app, :interval_time)
-    {interval_time, _} = Integer.parse(interval_time_string)
-
-    send_update_after(__MODULE__, %{id: :filter_form, action: :tick}, interval_time)
+    #   {:error, _} ->
+    #     {:ok,
+    #      socket
+    #      |> assign(registered_users: "-")
+    #      |> assign(games_supported: "-")
+    #      |> assign(users_online_now: "-")}
+    # end
   end
 end

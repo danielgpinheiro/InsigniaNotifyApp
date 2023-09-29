@@ -1,7 +1,7 @@
 defmodule InsigniaNotifyAppWeb.GamesController do
   use InsigniaNotifyAppWeb, :controller
 
-  alias InsigniaNotifyApp.Stats
+  # alias InsigniaNotifyApp.Stats
 
   alias InsigniaNotifyAppWeb.Html.Find
   alias InsigniaNotifyAppWeb.Http.GetInsigniaData
@@ -14,8 +14,8 @@ defmodule InsigniaNotifyAppWeb.GamesController do
   end
 
   defp parse_document({:ok, body}) do
-    {_, games_table_rows_selector} =
-      Application.get_env(:insignia_notify_app, :games_table_rows_selector)
+    # {_, games_table_rows_selector} =
+    #   Application.get_env(:insignia_notify_app, :games_table_rows_selector)
 
     {_, stats_selector} = Application.get_env(:insignia_notify_app, :stats_selector)
 
@@ -29,18 +29,45 @@ defmodule InsigniaNotifyAppWeb.GamesController do
   end
 
   defp update_stats(params) do
-    params = params |> Map.put(:id, 1)
+    games_supported = params.games_supported
+    registered_users = params.registered_users
+    users_online_now = params.users_online_now
 
-    case Stats.get() do
-      {:error, :not_found} ->
-        Stats.create(params)
-
-      {:ok, stats} ->
-        Stats.update(stats, params)
-    end
+    :ets.insert(:stats, {:games_supported, games_supported})
+    :ets.insert(:stats, {:registered_users, registered_users})
+    :ets.insert(:stats, {:users_online_now, users_online_now})
   end
 
   def get_stats() do
-    Stats.get()
+    list = :ets.tab2list(:stats)
+
+    if length(list) > 0 do
+      games_supported =
+        list
+        |> Enum.at(0)
+        |> elem(1)
+
+      registered_users =
+        list
+        |> Enum.at(1)
+        |> elem(1)
+
+      users_online_now =
+        list
+        |> Enum.at(2)
+        |> elem(1)
+
+      %{
+        games_supported: games_supported,
+        registered_users: registered_users,
+        users_online_now: users_online_now
+      }
+    else
+      %{
+        games_supported: "-",
+        registered_users: "-",
+        users_online_now: "-"
+      }
+    end
   end
 end
