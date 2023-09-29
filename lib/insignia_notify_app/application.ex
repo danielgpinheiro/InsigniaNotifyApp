@@ -17,7 +17,10 @@ defmodule InsigniaNotifyApp.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: InsigniaNotifyApp.PubSub},
       # Start the Endpoint (http/https)
-      InsigniaNotifyAppWeb.Endpoint
+      InsigniaNotifyAppWeb.Endpoint,
+
+      # Insignia HTML Crawler Interval Job
+      {InsigniaNotifyAppWeb.IntervalController, 0}
 
       # Start a worker by calling: InsigniaNotifyApp.Worker.start_link(arg)
       # {InsigniaNotifyApp.Worker, arg}
