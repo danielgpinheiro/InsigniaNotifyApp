@@ -1,10 +1,14 @@
 defmodule InsigniaNotifyAppWeb.GamesController do
   use InsigniaNotifyAppWeb, :controller
 
-  # alias InsigniaNotifyApp.Stats
-
   alias InsigniaNotifyAppWeb.Html.Find
   alias InsigniaNotifyAppWeb.Http.GetInsigniaData
+
+  def init do
+    :ets.new(:stats, [:set, :named_table])
+
+    get_and_parse()
+  end
 
   def get_and_parse do
     {_, base_url} = Application.get_env(:insignia_notify_app, :base_url)
@@ -26,6 +30,11 @@ defmodule InsigniaNotifyAppWeb.GamesController do
     |> update_stats()
 
     {:ok}
+  end
+
+  defp parse_document({:error, reason}) do
+    IO.puts("ERROR Parse Document")
+    IO.warn(reason)
   end
 
   defp update_stats(params) do
@@ -57,17 +66,14 @@ defmodule InsigniaNotifyAppWeb.GamesController do
         |> Enum.at(2)
         |> elem(1)
 
-      %{
-        games_supported: games_supported,
-        registered_users: registered_users,
-        users_online_now: users_online_now
-      }
+      {:ok,
+       %{
+         games_supported: games_supported,
+         registered_users: registered_users,
+         users_online_now: users_online_now
+       }}
     else
-      %{
-        games_supported: "-",
-        registered_users: "-",
-        users_online_now: "-"
-      }
+      {:error, :not_found}
     end
   end
 end

@@ -4,6 +4,6 @@ defmodule InsigniaNotifyAppWeb.Http.HandleResponse do
   end
 
   def response(:error, reason) do
-    raise RuntimeError, message: "#{reason}"
+    {:error, reason}
   end
 end

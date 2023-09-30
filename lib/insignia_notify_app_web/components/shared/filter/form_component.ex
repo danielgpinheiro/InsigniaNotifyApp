@@ -12,12 +12,15 @@ defmodule InsigniaNotifyAppWeb.Shared.Filter.FormComponent do
           >
             Filter
           </label>
-          <input
-            class="appearance-none block w-full bg-gray-600 text-white border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-gray-700"
-            id="grid-first-name"
-            type="text"
+          <.input
+            id="filter-game"
+            name="filter-game"
+            phx-change="filter-game"
+            phx-target={@myself}
+            value={@filter_text}
             placeholder="Filter by Title, Serial and Game Code"
-          />
+          >
+          </.input>
         </div>
       </div>
     </form>
@@ -25,6 +28,16 @@ defmodule InsigniaNotifyAppWeb.Shared.Filter.FormComponent do
   end
 
   def mount(socket) do
-    {:ok, socket}
+    {:ok, socket |> assign(:filter_text, "")}
+  end
+
+  def handle_event(
+        "filter-game",
+        %{"_target" => ["filter-game"], "filter-game" => filter},
+        socket
+      ) do
+    IO.inspect(filter)
+
+    {:noreply, socket}
   end
 end

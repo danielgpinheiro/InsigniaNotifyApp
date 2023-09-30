@@ -2,11 +2,9 @@ defmodule InsigniaNotifyAppWeb.Shared.Filter.FilterComponent do
   use InsigniaNotifyAppWeb, :live_component
 
   alias InsigniaNotifyApp.Filters.Filter
-  alias InsigniaNotifyApp.Stats.Statistic
 
   alias InsigniaNotifyAppWeb.GamesController
   alias InsigniaNotifyAppWeb.FilterController
-
   alias InsigniaNotifyAppWeb.Shared.Filter.FormComponent
 
   def render(assigns) do
@@ -16,7 +14,7 @@ defmodule InsigniaNotifyAppWeb.Shared.Filter.FilterComponent do
 
       <div class="flex items-center justify-between lg:flex-row flex-col">
         <div class="lg:mb-0 mb-6 text-center">
-          <%!-- <span class="text-gray-300 font-chakra mr-5">
+          <span class="text-gray-300 font-chakra mr-5">
             <strong><%= @registered_users %></strong> Registered Users
           </span>
           <span class="text-gray-300 font-chakra mr-5">
@@ -24,7 +22,7 @@ defmodule InsigniaNotifyAppWeb.Shared.Filter.FilterComponent do
           </span>
           <span class="text-gray-300 font-chakra">
             <strong><%= @games_supported %></strong> Games Supported
-          </span> --%>
+          </span>
         </div>
 
         <form class="flex item-center text-white font-chakra rounded bg-gray-700 relative">
@@ -50,11 +48,17 @@ defmodule InsigniaNotifyAppWeb.Shared.Filter.FilterComponent do
   end
 
   def mount(socket) do
+    if connected?(socket), do: tick()
     update_stats(socket)
   end
 
-  def update(assigns, socket) do
-    current_user = assigns.current_user
+  def update(%{action: :tick}, socket) do
+    tick()
+
+    update_stats(socket)
+  end
+
+  def update(%{current_user: current_user} = _assigns, socket) do
     user_id = current_user.id
 
     case FilterController.get_order_by_preferences_by_user_id(user_id) do
@@ -74,6 +78,31 @@ defmodule InsigniaNotifyAppWeb.Shared.Filter.FilterComponent do
     end
   end
 
+  def update_stats(socket) do
+    case GamesController.get_stats() do
+      {:ok,
+       %{
+         registered_users: registered_users,
+         games_supported: games_supported,
+         users_online_now: users_online_now
+       }} ->
+        {
+          :ok,
+          socket
+          |> assign(registered_users: registered_users)
+          |> assign(games_supported: games_supported)
+          |> assign(users_online_now: users_online_now)
+        }
+
+      {:error, _} ->
+        {:ok,
+         socket
+         |> assign(registered_users: "-")
+         |> assign(games_supported: "-")
+         |> assign(users_online_now: "-")}
+    end
+  end
+
   def handle_event(
         "change-order-by",
         %{"_target" => ["order-by-preferences"], "order-by-preferences" => order_by},
@@ -85,30 +114,10 @@ defmodule InsigniaNotifyAppWeb.Shared.Filter.FilterComponent do
     {:noreply, socket |> assign(:order_by, order_by)}
   end
 
-  defp update_stats(socket) do
-    IO.inspect(GamesController.get_stats())
-    {:ok, socket}
-    # case GamesController.get_stats() do
-    #   {:ok,
-    #    %Statistic{
-    #      registered_users: registered_users,
-    #      games_supported: games_supported,
-    #      users_online_now: users_online_now
-    #    }} ->
-    #     {
-    #       :ok,
-    #       socket
-    #       |> assign(registered_users: registered_users)
-    #       |> assign(games_supported: games_supported)
-    #       |> assign(users_online_now: users_online_now)
-    #     }
+  defp tick() do
+    {_, interval_time_string} = Application.get_env(:insignia_notify_app, :interval_time)
+    {interval_time, _} = Integer.parse(interval_time_string)
 
-    #   {:error, _} ->
-    #     {:ok,
-    #      socket
-    #      |> assign(registered_users: "-")
-    #      |> assign(games_supported: "-")
-    #      |> assign(users_online_now: "-")}
-    # end
+    send_update_after(__MODULE__, %{id: :filter_form, action: :tick}, interval_time)
   end
 end

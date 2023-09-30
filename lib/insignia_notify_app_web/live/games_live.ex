@@ -15,10 +15,15 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
       <.live_component
         module={RequestNotificationPermissionComponent}
         id={:request_notification}
-        params={assigns}
+        notification_params={@notification_params}
       />
 
-      <.live_component module={FilterComponent} id={:filter_form} current_user={@current_user} />
+      <.live_component
+        module={FilterComponent}
+        id={:filter_form}
+        current_user={@current_user}
+        stats={@stats}
+      />
 
       <.live_component module={GameListComponent} id={:game_list} current_user={@current_user} />
 
@@ -28,11 +33,20 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
   end
 
   def mount(_params, _session, socket) do
-    {:ok, socket}
+    {
+      :ok,
+      socket
+      |> assign(stats: %{})
+      |> assign(notification_params: %{})
+    }
   end
 
   def handle_event("notification-params", %{"params" => params}, socket) do
-    send_update(RequestNotificationPermissionComponent, id: :request_notification, params: params)
+    send_update(RequestNotificationPermissionComponent,
+      id: :request_notification,
+      notification_params: params
+    )
+
     {:noreply, socket}
   end
 end
