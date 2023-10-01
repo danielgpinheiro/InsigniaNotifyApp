@@ -1,6 +1,8 @@
 defmodule InsigniaNotifyAppWeb.GamesController do
   use InsigniaNotifyAppWeb, :controller
 
+  alias InsigniaNotifyApp.Games
+
   alias InsigniaNotifyAppWeb.Html.Find
   alias InsigniaNotifyAppWeb.Http.GetInsigniaData
 
@@ -15,36 +17,6 @@ defmodule InsigniaNotifyAppWeb.GamesController do
 
     GetInsigniaData.get(base_url)
     |> parse_document()
-  end
-
-  defp parse_document({:ok, body}) do
-    # {_, games_table_rows_selector} =
-    #   Application.get_env(:insignia_notify_app, :games_table_rows_selector)
-
-    {_, stats_selector} = Application.get_env(:insignia_notify_app, :stats_selector)
-
-    document = Floki.parse_document(body)
-
-    # Find.find_games_row(document, Application.get_env(:insignia_notify_app, games_table_rows_selector))
-    Find.find_insignia_stats(document, stats_selector)
-    |> update_stats()
-
-    {:ok}
-  end
-
-  defp parse_document({:error, reason}) do
-    IO.puts("ERROR Parse Document")
-    IO.warn(reason)
-  end
-
-  defp update_stats(params) do
-    games_supported = params.games_supported
-    registered_users = params.registered_users
-    users_online_now = params.users_online_now
-
-    :ets.insert(:stats, {:games_supported, games_supported})
-    :ets.insert(:stats, {:registered_users, registered_users})
-    :ets.insert(:stats, {:users_online_now, users_online_now})
   end
 
   def get_stats() do
@@ -75,5 +47,72 @@ defmodule InsigniaNotifyAppWeb.GamesController do
     else
       {:error, :not_found}
     end
+  end
+
+  def get_games do
+    Games.get_all()
+  end
+
+  defp parse_document({:ok, body}) do
+    {_, games_table_rows_selector} =
+      Application.get_env(:insignia_notify_app, :games_table_rows_selector)
+
+    {_, stats_selector} = Application.get_env(:insignia_notify_app, :stats_selector)
+
+    document = Floki.parse_document(body)
+
+    Find.find_games_row(
+      document,
+      games_table_rows_selector
+    )
+    |> update_game()
+
+    Find.find_insignia_stats(document, stats_selector)
+    |> update_stats()
+
+    {:ok}
+  end
+
+  defp parse_document({:error, reason}) do
+    IO.puts("ERROR Parse Document")
+    IO.warn(reason)
+  end
+
+  defp update_game(games) do
+    Enum.map(games, fn game ->
+      case Games.get(game.serial) do
+        {:ok, _} ->
+          {_, copy_game} = Games.get(game.serial)
+
+          last_active_players =
+            if Map.has_key?(copy_game, :active_players), do: copy_game.active_players, else: 0
+
+          last_active_sessions =
+            if Map.has_key?(copy_game, :active_sessions), do: copy_game.active_sessions, else: 0
+
+          modified_game =
+            game
+            |> Map.put(:last_active_players, last_active_players)
+            |> Map.put(:last_active_sessions, last_active_sessions)
+
+          Games.update(copy_game, modified_game)
+
+        {:error, _} ->
+          game
+          |> Map.put(:last_active_players, 0)
+          |> Map.put(:last_active_sessions, 0)
+          |> Games.create()
+      end
+    end)
+  end
+
+  defp update_stats(stats) do
+    games_supported = stats.games_supported
+    registered_users = stats.registered_users
+    users_online_now = stats.users_online_now
+
+    :ets.insert(:stats, {:games_supported, games_supported})
+    :ets.insert(:stats, {:registered_users, registered_users})
+    :ets.insert(:stats, {:users_online_now, users_online_now})
   end
 end

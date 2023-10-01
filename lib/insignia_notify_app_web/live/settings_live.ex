@@ -17,7 +17,7 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
       <.live_component
         module={RequestNotificationPermissionComponent}
         id={:request_notification}
-        params={assigns}
+        notification_params={@notification_params}
       />
 
       <div class="w-[95%] lg:w-[1140px] bg-gray-700 mt-20 mx-auto rounded p-2 flex flex-col">
@@ -91,15 +91,19 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
 
     case SettingsController.get_settings_by_user_id(user_id) do
       {:ok, %Setting{notification_sound: notification_sound}} ->
-        {:ok, socket |> assign(:sound, notification_sound)}
+        {:ok, socket |> assign(:sound, notification_sound) |> assign(notification_params: %{})}
 
       {:error, _} ->
-        {:ok, socket |> assign(:sound, "beep")}
+        {:ok, socket |> assign(:sound, "beep") |> assign(notification_params: %{})}
     end
   end
 
   def handle_event("notification-params", %{"params" => params}, socket) do
-    send_update(RequestNotificationPermissionComponent, id: :request_notification, params: params)
+    send_update(RequestNotificationPermissionComponent,
+      id: :request_notification,
+      notification_params: params
+    )
+
     {:noreply, socket}
   end
 

@@ -18,7 +18,7 @@ defmodule InsigniaNotifyAppWeb.Shared.Filter.FormComponent do
             phx-change="filter-game"
             phx-target={@myself}
             value={@filter_text}
-            placeholder="Filter by Title, Serial and Game Code"
+            placeholder="Filter by Title, Serial or Game Code"
           >
           </.input>
         </div>

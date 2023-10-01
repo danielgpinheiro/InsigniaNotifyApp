@@ -5,7 +5,6 @@ defmodule InsigniaNotifyAppWeb.Html.Find do
   def find_games_row({:ok, html}, games_table_rows_selector) do
     Floki.find(html, games_table_rows_selector)
     |> Enum.map(fn row -> Parse.parse_games_row(row) end)
-    |> IO.inspect()
   end
 
   def find_games_row({:error, reason}, _),

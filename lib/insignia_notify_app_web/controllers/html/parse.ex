@@ -13,6 +13,13 @@ defmodule InsigniaNotifyAppWeb.Html.Parse do
       |> Floki.attribute("href")
       |> Enum.at(0)
 
+    game_thumbnail =
+      tds
+      |> Floki.find("a:nth-child(1)")
+      |> Floki.find("img")
+      |> Floki.attribute("src")
+      |> Enum.at(0)
+
     {serial, code} =
       tds
       |> Floki.find("td:nth-child(2)")
@@ -34,14 +41,51 @@ defmodule InsigniaNotifyAppWeb.Html.Parse do
       |> String.split("in")
       |> handle_active_players_content()
 
+    has_live_aware_feature =
+      tds
+      |> Floki.find("td:nth-child(5)")
+      |> Floki.find("i:nth-child(1)")
+      |> Floki.attribute("i", "class")
+      |> List.to_string()
+      |> String.contains?("invisible")
+
+    has_matchmaking_feature =
+      tds
+      |> Floki.find("td:nth-child(5)")
+      |> Floki.find("i:nth-child(2)")
+      |> Floki.attribute("i", "class")
+      |> List.to_string()
+      |> String.contains?("invisible")
+
+    has_leaderboards_feature =
+      tds
+      |> Floki.find("td:nth-child(5)")
+      |> Floki.find("i:nth-child(3)")
+      |> Floki.attribute("i", "class")
+      |> List.to_string()
+      |> String.contains?("invisible")
+
+    has_user_generated_content_feature =
+      tds
+      |> Floki.find("td:nth-child(5)")
+      |> Floki.find("i:nth-child(4)")
+      |> Floki.attribute("i", "class")
+      |> List.to_string()
+      |> String.contains?("invisible")
+
     %{
       name: game_name,
       url: game_url,
+      thumbnail: game_thumbnail,
       serial: serial,
       code: code,
       online_users: String.to_integer(online_users),
       active_players: String.to_integer(active_players),
-      active_sessions: String.to_integer(active_sessions)
+      active_sessions: String.to_integer(active_sessions),
+      has_live_aware_feature: !has_live_aware_feature,
+      has_matchmaking_feature: !has_matchmaking_feature,
+      has_leaderboards_feature: !has_leaderboards_feature,
+      has_user_generated_content_feature: !has_user_generated_content_feature
     }
   end
 

@@ -5,37 +5,33 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListHeaderComponent do
     ~H"""
     <div class="w-full flex relative p-1 flex-wrap lg:flex-nowrap">
       <div class="flex">
-        <img
-          src="https://r2-cdn.insignia.live/Shl9AF66oSfXRmcAdNj580DyHtpLfm8ETKBnnD1i.png"
-          class="w-16 h-16 lg:w-24 lg:h-24 rounded"
-          alt=""
-        />
+        <img src={@content.thumbnail} class="w-16 h-16 lg:w-24 lg:h-24 rounded" alt="" />
 
         <div class="game-info flex flex-col lg:ml-6 ml-2 justify-center w-[300px] shrink-0">
           <a
-            href="https://insignia.live/games/MS-074"
+            href={@content.url}
             target="_blank"
             class="text-white text-base font-chakra truncate lg:text-clip w-[80%] lg:w-auto"
           >
-            Phantasy Star Online Episode I & II
+            <%= @content.name %>
           </a>
 
-          <strong class="text-gray-300 text-sm">MS-074</strong>
-          <span class="text-gray-300 text-sm">4D53004A</span>
+          <strong class="text-gray-300 text-sm"><%= @content.serial %></strong>
+          <span class="text-gray-300 text-sm"><%= @content.code %></span>
         </div>
       </div>
 
       <div class="stats flex space-between items-center w-full lg:w-[35%] shrink-0 pr-10 lg:pr-0 mt-4 lg:mt-0">
         <strong class="text-white text-sm flex flex-col text-center font-chakra relative px-6 after:content-['*'] after:absolute after:top-[calc(50%-2px)] after:right-0 after:w-[5px] after:h-[5px] last:after:hidden">
-          Online Users <span class="text-gray-300 text-base">9999</span>
+          Online Users <span class="text-gray-300 text-base"><%= @content.online_users %></span>
         </strong>
 
         <strong class="text-white text-sm flex flex-col text-center font-chakra relative px-6 after:content-['*'] after:absolute after:top-[calc(50%-2px)] after:right-0 after:w-[5px] after:h-[5px] last:after:hidden">
-          Active Users <span class="text-gray-300 text-base">9999</span>
+          Active Users <span class="text-gray-300 text-base"><%= @content.active_players %></span>
         </strong>
 
         <strong class="text-white text-sm flex flex-col text-center font-chakra relative px-6 after:content-['*'] after:absolute after:top-[calc(50%-2px)] after:right-0 after:w-[5px] after:h-[5px] last:after:hidden">
-          Active Sessions <span class="text-gray-300 text-base">9999</span>
+          Active Sessions <span class="text-gray-300 text-base"><%= @content.active_sessions %></span>
         </strong>
       </div>
 
@@ -44,25 +40,45 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListHeaderComponent do
 
         <div class="flex w-full justify-around">
           <i
-            class="material-symbols-rounded text-gray-300 hover:text-xbox-green cursor-pointer"
+            class={
+              if @content.has_live_aware_feature,
+                do: "material-symbols-rounded text-gray-300 hover:text-xbox-green cursor-pointer",
+                else:
+                  "material-symbols-rounded text-gray-300 hover:text-xbox-green cursor-pointer disabled"
+            }
             title="Xbox Live Aware"
           >
             person
           </i>
           <i
-            class="material-symbols-rounded text-gray-300 hover:text-xbox-green cursor-pointer"
+            class={
+              if @content.has_matchmaking_feature,
+                do: "material-symbols-rounded text-gray-300 hover:text-xbox-green cursor-pointer",
+                else:
+                  "material-symbols-rounded text-gray-300 hover:text-xbox-green cursor-pointer disabled"
+            }
             title="Matchmaking"
           >
             language
           </i>
           <i
-            class="material-symbols-rounded text-gray-300 hover:text-xbox-green cursor-pointer"
+            class={
+              if @content.has_leaderboards_feature,
+                do: "material-symbols-rounded text-gray-300 hover:text-xbox-green cursor-pointer",
+                else:
+                  "material-symbols-rounded text-gray-300 hover:text-xbox-green cursor-pointer disabled"
+            }
             title="Leaderboards"
           >
             leaderboard
           </i>
           <i
-            class="material-symbols-rounded text-gray-300 hover:text-xbox-green cursor-pointer"
+            class={
+              if @content.has_user_generated_content_feature,
+                do: "material-symbols-rounded text-gray-300 hover:text-xbox-green cursor-pointer",
+                else:
+                  "material-symbols-rounded text-gray-300 hover:text-xbox-green cursor-pointer disabled"
+            }
             title="User Generated Content"
           >
             extension

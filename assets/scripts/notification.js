@@ -107,5 +107,6 @@ const notification = (event) => {
     icon: notifImg,
     badge: notifImg,
   };
+
   window.swRegistration.showNotification("PWA Notification!", options);
 };
