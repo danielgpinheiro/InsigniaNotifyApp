@@ -9,9 +9,9 @@ defmodule InsigniaNotifyApp.Games.Game do
     field :thumbnail, :string
     field :code, :string
     field :online_users, :integer
-    field :active_players, :integer
+    field :active_users, :integer
     field :active_sessions, :integer
-    field :last_active_players, :integer
+    field :last_active_users, :integer
     field :last_active_sessions, :integer
     field :has_leaderboards_feature, :boolean
     field :has_live_aware_feature, :boolean

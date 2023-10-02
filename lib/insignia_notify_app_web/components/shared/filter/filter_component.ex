@@ -1,10 +1,13 @@
 defmodule InsigniaNotifyAppWeb.Shared.Filter.FilterComponent do
+  @moduledoc false
+
   use InsigniaNotifyAppWeb, :live_component
 
   alias InsigniaNotifyApp.Filters.Filter
 
   alias InsigniaNotifyAppWeb.GamesController
   alias InsigniaNotifyAppWeb.FilterController
+  alias InsigniaNotifyAppWeb.Shared.GameList.GameListComponent
   alias InsigniaNotifyAppWeb.Shared.Filter.FormComponent
 
   def render(assigns) do
@@ -110,6 +113,11 @@ defmodule InsigniaNotifyAppWeb.Shared.Filter.FilterComponent do
       ) do
     user_id = socket.assigns.current_user.id
     FilterController.change_order_by(%{user_id: user_id, order_by: order_by})
+
+    send_update(GameListComponent, %{
+      id: :game_list,
+      action: :order_by_game_list
+    })
 
     {:noreply, socket |> assign(:order_by, order_by)}
   end

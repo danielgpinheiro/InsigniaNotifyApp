@@ -34,12 +34,12 @@ defmodule InsigniaNotifyAppWeb.Html.Parse do
       |> Floki.text()
       |> String.replace("\n", "")
 
-    {active_players, active_sessions} =
+    {active_users, active_sessions} =
       tds
       |> Floki.find("td:nth-child(4)")
       |> Floki.text()
       |> String.split("in")
-      |> handle_active_players_content()
+      |> handle_active_users_content()
 
     has_live_aware_feature =
       tds
@@ -80,7 +80,7 @@ defmodule InsigniaNotifyAppWeb.Html.Parse do
       serial: serial,
       code: code,
       online_users: String.to_integer(online_users),
-      active_players: String.to_integer(active_players),
+      active_users: String.to_integer(active_users),
       active_sessions: String.to_integer(active_sessions),
       has_live_aware_feature: !has_live_aware_feature,
       has_matchmaking_feature: !has_matchmaking_feature,
@@ -116,18 +116,18 @@ defmodule InsigniaNotifyAppWeb.Html.Parse do
     }
   end
 
-  defp handle_active_players_content(list) when length(list) == 1 do
-    active_players =
+  defp handle_active_users_content(list) when length(list) == 1 do
+    active_users =
       list
       |> Enum.at(0)
       |> String.replace("\n", "")
       |> String.replace("-", "0")
 
-    {active_players, "0"}
+    {active_users, "0"}
   end
 
-  defp handle_active_players_content(list) when length(list) == 2 do
-    active_players =
+  defp handle_active_users_content(list) when length(list) == 2 do
+    active_users =
       list
       |> Enum.at(0)
       |> String.replace("\n", "")
@@ -140,6 +140,6 @@ defmodule InsigniaNotifyAppWeb.Html.Parse do
       |> Enum.at(0)
       |> String.trim()
 
-    {active_players, active_sessions}
+    {active_users, active_sessions}
   end
 end

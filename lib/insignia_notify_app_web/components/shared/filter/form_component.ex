@@ -1,5 +1,9 @@
 defmodule InsigniaNotifyAppWeb.Shared.Filter.FormComponent do
+  @moduledoc false
+
   use InsigniaNotifyAppWeb, :live_component
+
+  alias InsigniaNotifyAppWeb.Shared.GameList.GameListComponent
 
   def render(assigns) do
     ~H"""
@@ -36,7 +40,7 @@ defmodule InsigniaNotifyAppWeb.Shared.Filter.FormComponent do
         %{"_target" => ["filter-game"], "filter-game" => filter},
         socket
       ) do
-    IO.inspect(filter)
+    send_update(GameListComponent, %{id: :game_list, action: :filter_games_list, filter: filter})
 
     {:noreply, socket}
   end

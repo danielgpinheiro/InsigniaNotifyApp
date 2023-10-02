@@ -84,22 +84,22 @@ defmodule InsigniaNotifyAppWeb.GamesController do
         {:ok, _} ->
           {_, copy_game} = Games.get(game.serial)
 
-          last_active_players =
-            if Map.has_key?(copy_game, :active_players), do: copy_game.active_players, else: 0
+          last_active_users =
+            if Map.has_key?(copy_game, :active_users), do: copy_game.active_users, else: 0
 
           last_active_sessions =
             if Map.has_key?(copy_game, :active_sessions), do: copy_game.active_sessions, else: 0
 
           modified_game =
             game
-            |> Map.put(:last_active_players, last_active_players)
+            |> Map.put(:last_active_users, last_active_users)
             |> Map.put(:last_active_sessions, last_active_sessions)
 
           Games.update(copy_game, modified_game)
 
         {:error, _} ->
           game
-          |> Map.put(:last_active_players, 0)
+          |> Map.put(:last_active_users, 0)
           |> Map.put(:last_active_sessions, 0)
           |> Games.create()
       end

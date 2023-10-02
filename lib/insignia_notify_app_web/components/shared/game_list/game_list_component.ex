@@ -1,7 +1,10 @@
 defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
+  @moduledoc false
+
   use InsigniaNotifyAppWeb, :live_component
 
   alias InsigniaNotifyAppWeb.GamesController
+  alias InsigniaNotifyAppWeb.FilterController
   alias InsigniaNotifyAppWeb.Shared.GameList.GameListHeaderComponent
   alias InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent
 
@@ -29,32 +32,65 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
   def mount(socket) do
     if connected?(socket), do: tick()
 
-    set_games(socket)
+    {:ok, socket |> assign(games: get_games(""))}
+  end
+
+  def update(%{action: :order_by_game_list}, socket) do
+    user_id = socket.assigns.current_user.id
+
+    {:ok, socket |> assign(games: get_games(user_id))}
   end
 
   def update(%{action: :tick}, socket) do
     tick()
 
-    set_games(socket)
+    user_id = socket.assigns.current_user.id
+
+    {:ok, socket |> assign(games: get_games(user_id))}
+  end
+
+  def update(%{current_user: current_user} = _assigns, socket) do
+    {:ok,
+     socket |> assign(current_user: current_user) |> assign(games: get_games(current_user.id))}
   end
 
   def update(_assigns, socket) do
     {:ok, socket}
   end
 
-  defp set_games(socket) do
-    case GamesController.get_games() do
-      {:ok, []} ->
-        {
-          :ok,
-          socket
-          |> assign(games: [])
-        }
+  defp get_games(user_id) do
+    {_, games} = GamesController.get_games()
 
-      {:ok, games} ->
-        {:ok,
-         socket
-         |> assign(games: games)}
+    {_, order_by_preferences_by_user_id} =
+      if user_id != "",
+        do: FilterController.get_order_by_preferences_by_user_id(user_id),
+        else: {:ok, %{order_by: "active_users"}}
+
+    Enum.sort_by(
+      games,
+      &Map.fetch(&1, get_order_by_params(order_by_preferences_by_user_id).order_by),
+      get_order_by_params(order_by_preferences_by_user_id).sorter
+    )
+  end
+
+  defp get_order_by_params(order_by_preferences_by_user_id) do
+    order_by_params =
+      if order_by_preferences_by_user_id == :not_found,
+        do: "active_users",
+        else: order_by_preferences_by_user_id.order_by
+
+    case order_by_params do
+      "active_users" ->
+        %{order_by: String.to_atom(order_by_params), sorter: :desc}
+
+      "active_sessions" ->
+        %{order_by: String.to_atom(order_by_params), sorter: :desc}
+
+      "online_users" ->
+        %{order_by: String.to_atom(order_by_params), sorter: :desc}
+
+      "game_title" ->
+        %{order_by: :name, sorter: :asc}
     end
   end
 

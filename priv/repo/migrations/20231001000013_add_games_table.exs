@@ -9,9 +9,9 @@ defmodule InsigniaNotifyApp.Repo.Migrations.AddGamesTable do
       add :thumbnail, :string
       add :code, :string
       add :online_users, :integer
-      add :active_players, :integer
+      add :active_users, :integer
       add :active_sessions, :integer
-      add :last_active_players, :integer
+      add :last_active_users, :integer
       add :last_active_sessions, :integer
       add :has_leaderboards_feature, :boolean
       add :has_live_aware_feature, :boolean

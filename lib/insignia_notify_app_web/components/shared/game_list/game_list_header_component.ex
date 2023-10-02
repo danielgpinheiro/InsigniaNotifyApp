@@ -27,7 +27,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListHeaderComponent do
         </strong>
 
         <strong class="text-white text-sm flex flex-col text-center font-chakra relative px-6 after:content-['*'] after:absolute after:top-[calc(50%-2px)] after:right-0 after:w-[5px] after:h-[5px] last:after:hidden">
-          Active Users <span class="text-gray-300 text-base"><%= @content.active_players %></span>
+          Active Users <span class="text-gray-300 text-base"><%= @content.active_users %></span>
         </strong>
 
         <strong class="text-white text-sm flex flex-col text-center font-chakra relative px-6 after:content-['*'] after:absolute after:top-[calc(50%-2px)] after:right-0 after:w-[5px] after:h-[5px] last:after:hidden">
