@@ -39,6 +39,9 @@ export const displayNotification = {
     window.addEventListener("requestNotificationPermission", () => {
       requestNotificationPermission();
     });
+    window.addEventListener("phx:showNotification", (event) => {
+      checkPermissions(event);
+    });
 
     self = this;
 
@@ -74,6 +77,7 @@ const requestNotificationPermission = () => {
 };
 
 const checkPermissions = (event) => {
+  console.log("AAAAAAAAAAA")
   if (window.Notification && Notification.permission === "granted") {
     notification(event);
   } else if (window.Notification && Notification.permission !== "denied") {
@@ -99,6 +103,8 @@ const checkPermissions = (event) => {
 
 const notification = (event) => {
   pushEvent();
+
+  console.log(event)
 
   const notifBody = `Body`;
   const notifImg = `https://r2-cdn.insignia.live/Shl9AF66oSfXRmcAdNj580DyHtpLfm8ETKBnnD1i.png`;

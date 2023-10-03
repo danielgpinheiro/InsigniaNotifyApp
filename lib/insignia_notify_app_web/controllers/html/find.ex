@@ -17,4 +17,12 @@ defmodule InsigniaNotifyAppWeb.Html.Find do
 
   def find_insignia_stats({:error, reason}, _),
     do: HandleResponse.response(:error, reason)
+
+  def find_game_matches({:ok, html}, stats_selector) do
+    Floki.find(html, stats_selector)
+    |> Parse.parse_game_matches()
+  end
+
+  def find_game_matches({:error, reason}, _),
+    do: HandleResponse.response(:error, reason)
 end

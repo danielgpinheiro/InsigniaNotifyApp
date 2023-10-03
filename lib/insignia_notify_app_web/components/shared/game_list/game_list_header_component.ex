@@ -1,11 +1,15 @@
 defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListHeaderComponent do
   use InsigniaNotifyAppWeb, :live_component
 
+  alias InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent
+
   def render(assigns) do
     ~H"""
     <div class="w-full flex relative p-1 flex-wrap lg:flex-nowrap">
       <div class="flex">
-        <img src={@content.thumbnail} class="w-16 h-16 lg:w-24 lg:h-24 rounded" alt="" />
+        <object data={@content.thumbnail} class="w-16 h-16 lg:w-24 lg:h-24 rounded" type="image/png">
+          <img src="/images/logo.png" alt="" />
+        </object>
 
         <div class="game-info flex flex-col lg:ml-6 ml-2 justify-center w-[300px] shrink-0">
           <a
@@ -89,7 +93,10 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListHeaderComponent do
       <button
         class="absolute top-[calc(50%-20px)] right-4"
         title="Expand to toggle notifications and view matches"
-        phx-click={JS.dispatch("toggleAccordion")}
+        phx-click="toggle_accordion"
+        phx-target={@myself}
+        phx-value={false}
+        id={"#{@id}_button"}
       >
         <span class="material-symbols-rounded !text-4xl text-white expand-more">expand_more</span>
         <span class="material-symbols-rounded !text-4xl text-white expand-less !hidden">
@@ -101,6 +108,42 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListHeaderComponent do
   end
 
   def mount(socket) do
+    {:ok, socket |> assign(toggle_opened: false)}
+  end
+
+  def update(%{action: :set_toggle_opened}, socket) do
+    toggle_opened = socket.assigns.toggle_opened
+
+    {:ok, socket |> assign(toggle_opened: !toggle_opened)}
+  end
+
+  def update(%{content: content, id: id} = _assigns, socket) do
+    {:ok, socket |> assign(content: content) |> assign(id: id)}
+  end
+
+  def update(_, socket) do
     {:ok, socket}
+  end
+
+  def handle_event(
+        "toggle_accordion",
+        _,
+        socket
+      ) do
+    button_id = "##{socket.assigns.id}_button"
+    game_content_id = String.replace(socket.assigns.id, "header", "content")
+    toggle_opened = socket.assigns.toggle_opened
+
+    send_update(
+      GameListContentComponent,
+      %{id: game_content_id, action: :content_opened, opened: !toggle_opened}
+    )
+
+    send_update(
+      __MODULE__,
+      %{id: socket.assigns.id, action: :set_toggle_opened}
+    )
+
+    {:noreply, push_event(socket, "toggleAccordion", %{id: button_id})}
   end
 end

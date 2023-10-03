@@ -4,6 +4,7 @@ defmodule InsigniaNotifyAppWeb.GamesController do
   alias InsigniaNotifyApp.Games
 
   alias InsigniaNotifyAppWeb.Html.Find
+  alias InsigniaNotifyAppWeb.Http.Api
   alias InsigniaNotifyAppWeb.Http.GetInsigniaData
 
   def init do
@@ -51,6 +52,21 @@ defmodule InsigniaNotifyAppWeb.GamesController do
 
   def get_games do
     Games.get_all()
+  end
+
+  def get_game_matches(url) do
+    case Api.get(url) do
+      {:ok, body} ->
+        document = Floki.parse_document(body)
+
+        Find.find_game_matches(
+          document,
+          "table"
+        )
+
+      {:error, _} ->
+        {:error, :internal_server_error}
+    end
   end
 
   defp parse_document({:ok, body}) do

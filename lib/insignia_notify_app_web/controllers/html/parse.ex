@@ -116,6 +116,31 @@ defmodule InsigniaNotifyAppWeb.Html.Parse do
     }
   end
 
+  def parse_game_matches(html) do
+    [table | _] = html
+    table_head = table |> Floki.find("thead")
+    table_body = table |> Floki.find("tbody")
+
+    head =
+      table_head
+      |> Floki.find("th")
+      |> Floki.raw_html()
+      |> String.split("</th>")
+      |> Enum.map(fn text ->
+        String.replace(text, "<th>", "") |> String.replace("<th class=\"text-right\">", "")
+      end)
+      |> Enum.filter(fn text -> text != "" end)
+
+    body =
+      table_body
+      |> Floki.find("tr")
+      |> Enum.map(fn tr ->
+        Floki.find(tr, "td") |> Enum.map(fn td -> Floki.text(td) |> String.replace("\n", "") end)
+      end)
+
+    %{head: head, body: body}
+  end
+
   defp handle_active_users_content(list) when length(list) == 1 do
     active_users =
       list

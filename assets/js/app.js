@@ -30,13 +30,14 @@ import topbar from "../vendor/topbar";
 
 import { displayNotification } from "../scripts/notification";
 import { playSound } from "../scripts/sound";
+import { toggleAccordion } from "../scripts/toggle_accordion";
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
-  hooks: { SupportHook, AuthenticationHook, RegistrationHook, displayNotification, playSound },
+  hooks: { SupportHook, AuthenticationHook, RegistrationHook, displayNotification, playSound, toggleAccordion },
 });
 
 // Show progress bar on live navigation and form submits
@@ -71,9 +72,3 @@ window.addEventListener("load", () => {
     console.warn("Push messaging is not supported");
   }
 });
-
-/* Custom Events */
-window.addEventListener("toggleAccordion", (event) => {
-  const accordion = event.target.closest('.accordion')
-  accordion.classList.toggle('active')
-})

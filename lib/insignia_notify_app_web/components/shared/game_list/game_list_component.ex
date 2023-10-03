@@ -10,20 +10,31 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
 
   def render(assigns) do
     ~H"""
-    <ul class="game-list lg:w-[1140px] w-full my-0 mx-auto px-4 lg:px-0">
-      <%= for item <- @games do %>
-        <li class="w-full flex flex-col bg-gray-700 rounded accordion overflow-hidden mb-5">
-          <.live_component
-            module={GameListHeaderComponent}
-            id={"game_list_header_#{item.serial}"}
-            content={item}
-          />
-          <.live_component
-            module={GameListContentComponent}
-            id={"game_list_content_#{item.serial}"}
-            content={item}
-          />
-        </li>
+    <ul
+      class="game-list lg:w-[1140px] w-full my-0 mx-auto px-4 lg:px-0 min-h-[500px]"
+      id="list"
+      phx-hook="toggleAccordion"
+    >
+      <%= if length(@games) > 0 do %>
+        <%= for item <- @games do %>
+          <li class="w-full flex flex-col bg-gray-700 rounded accordion overflow-hidden mb-5">
+            <.live_component
+              module={GameListHeaderComponent}
+              id={"game_list_header_#{item.serial}"}
+              content={item}
+            />
+            <.live_component
+              module={GameListContentComponent}
+              id={"game_list_content_#{item.serial}"}
+              content={item}
+              current_user={@current_user}
+            />
+          </li>
+        <% end %>
+      <% else %>
+        <h1 class="text-white text-2xl  font-chakra text-center py-10">
+          No games found with this filter
+        </h1>
       <% end %>
     </ul>
     """
@@ -32,33 +43,45 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
   def mount(socket) do
     if connected?(socket), do: tick()
 
-    {:ok, socket |> assign(games: get_games(""))}
+    {:ok, socket |> assign(filter: "") |> assign(games: get_games("", ""))}
+  end
+
+  def update(%{action: :filter_game_list, filter: filter}, socket) do
+    user_id = socket.assigns.current_user.id
+
+    {:ok, socket |> assign(filter: filter) |> assign(games: get_games(user_id, filter))}
   end
 
   def update(%{action: :order_by_game_list}, socket) do
     user_id = socket.assigns.current_user.id
+    filter = socket.assigns.filter
 
-    {:ok, socket |> assign(games: get_games(user_id))}
+    {:ok, socket |> assign(games: get_games(user_id, filter))}
   end
 
   def update(%{action: :tick}, socket) do
     tick()
 
     user_id = socket.assigns.current_user.id
+    filter = socket.assigns.filter
 
-    {:ok, socket |> assign(games: get_games(user_id))}
+    {:ok, socket |> assign(games: get_games(user_id, filter))}
   end
 
   def update(%{current_user: current_user} = _assigns, socket) do
+    filter = socket.assigns.filter
+
     {:ok,
-     socket |> assign(current_user: current_user) |> assign(games: get_games(current_user.id))}
+     socket
+     |> assign(current_user: current_user)
+     |> assign(games: get_games(current_user.id, filter))}
   end
 
   def update(_assigns, socket) do
     {:ok, socket}
   end
 
-  defp get_games(user_id) do
+  defp get_games(user_id, filter) do
     {_, games} = GamesController.get_games()
 
     {_, order_by_preferences_by_user_id} =
@@ -66,8 +89,23 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
         do: FilterController.get_order_by_preferences_by_user_id(user_id),
         else: {:ok, %{order_by: "active_users"}}
 
+    filtered_games =
+      if String.length(filter) > 0,
+        do:
+          Enum.filter(games, fn game ->
+            name_downcased = String.downcase(game.name)
+            serial_downcased = String.downcase(game.serial)
+            code_downcased = String.downcase(game.code)
+            filter_downcased = String.downcase(filter)
+
+            String.contains?(name_downcased, filter_downcased) or
+              String.contains?(serial_downcased, filter_downcased) or
+              String.contains?(code_downcased, filter_downcased)
+          end),
+        else: games
+
     Enum.sort_by(
-      games,
+      filtered_games,
       &Map.fetch(&1, get_order_by_params(order_by_preferences_by_user_id).order_by),
       get_order_by_params(order_by_preferences_by_user_id).sorter
     )
