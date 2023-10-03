@@ -18,7 +18,8 @@ defmodule InsigniaNotifyAppWeb do
   """
 
   def static_paths,
-    do: ~w(assets fonts images favicon.ico robots.txt manifest.json sw.js sounds icons)
+    do:
+      ~w(assets fonts images favicon.ico robots.txt manifest.json firebase-messaging-sw.js firebase-config.js sounds icons)
 
   def router do
     quote do

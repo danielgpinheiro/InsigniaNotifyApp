@@ -28,16 +28,20 @@ import {
 
 import topbar from "../vendor/topbar";
 
-import { displayNotification } from "../scripts/notification";
+import { requestNotificationPermission } from "../scripts/notification";
 import { playSound } from "../scripts/sound";
 import { toggleAccordion } from "../scripts/toggle_accordion";
+
+import { initializeApp } from 'firebase/app';
+import { getMessaging, onMessage } from "firebase/messaging";
+import { firebaseConfig } from "./firebase-config"
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
-  hooks: { SupportHook, AuthenticationHook, RegistrationHook, displayNotification, playSound, toggleAccordion },
+  hooks: { SupportHook, AuthenticationHook, RegistrationHook, requestNotificationPermission, playSound, toggleAccordion },
 });
 
 // Show progress bar on live navigation and form submits
@@ -54,21 +58,20 @@ liveSocket.connect();
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket;
 
-// Service Worker Register
-window.addEventListener("load", () => {
-  if ("serviceWorker" in navigator && "PushManager" in window) {
-    console.info("Service Worker and Push is supported");
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const messaging = getMessaging(app);
 
-    navigator.serviceWorker
-      .register("/sw.js", { scope: "./" })
-      .then((swReg) => {
-        console.info("Service Worker is registered", swReg);
-        window.swRegistration = swReg;
-      })
-      .catch((error) => {
-        console.error("Service Worker Error", error);
-      });
-  } else {
-    console.warn("Push messaging is not supported");
-  }
+onMessage(messaging, (payload) => {
+  console.log(payload)
+
+  const notifBody = `Body`;
+  const notifImg = `https://r2-cdn.insignia.live/Shl9AF66oSfXRmcAdNj580DyHtpLfm8ETKBnnD1i.png`;
+  const options = {
+    body: notifBody,
+    icon: notifImg,
+    badge: notifImg,
+  };
+
+  new Notification("PWA Notification!", options);
 });

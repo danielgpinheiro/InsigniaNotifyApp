@@ -39,3 +39,6 @@ npm-debug.log
 
 .env
 
+/priv/static/firebase-config.js
+/assets/js/firebase-config.js
+

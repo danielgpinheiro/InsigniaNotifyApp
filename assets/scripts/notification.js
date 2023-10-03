@@ -1,3 +1,7 @@
+import { getToken, getMessaging } from "firebase/messaging";
+
+let self;
+
 const toastOptions = {
   duration: 3000,
   newWindow: true,
@@ -9,38 +13,40 @@ const toastOptions = {
   },
 };
 
-let self;
-
 const isSupported = () =>
   "Notification" in window &&
   "serviceWorker" in navigator &&
   "PushManager" in window;
 
-const pushEvent = () => {
+const pushEvent = async () => {
   const isIOSButNotInstalled =
     "serviceWorker" in navigator && window.navigator.standalone === false;
   const permission = isSupported() ? Notification.permission : "";
 
-  const notification = {
+  const permissions = {
     isIOSButNotInstalled: isIOSButNotInstalled,
     permission: permission,
   };
 
+  const messaging = getMessaging()
+  const token = await getToken(messaging, { vapidKey: "BJeYdMFdTKq6evbhymLyg8Jv4cQri-dql6124j4L2mMG_xXdbucofUIqHu2kJuKNHkO0WiwJAWd9XJzH7ZZ0DC4" })
+
+  console.log('token do usuário:', token)
+
   if (window.location.pathname !== "/login") {
-    self.pushEvent("notification-params", { params: notification });
+    self.pushEvent("notification-params", {
+      params: {
+        permissions: permissions,
+        firebaseUserToken: token
+      }
+    });
   }
 };
 
-export const displayNotification = {
+export const requestNotificationPermission = {
   mounted() {
-    window.addEventListener("showNotification", (event) => {
-      checkPermissions(event);
-    });
     window.addEventListener("requestNotificationPermission", () => {
-      requestNotificationPermission();
-    });
-    window.addEventListener("phx:showNotification", (event) => {
-      checkPermissions(event);
+      requestPermission();
     });
 
     self = this;
@@ -49,15 +55,12 @@ export const displayNotification = {
   },
 };
 
-const requestNotificationPermission = () => {
+const requestPermission = () => {
   if (window.Notification && Notification.permission === "granted") {
-    console.info("granted");
     pushEvent();
   } else if (window.Notification && Notification.permission !== "denied") {
     Notification.requestPermission((status) => {
-      if (status === "granted") {
-        console.info("granted");
-      } else {
+      if (status !== "granted") {
         Toastify({
           text: "You denied or dismissed permissions to notifications.",
           ...toastOptions,
@@ -74,45 +77,4 @@ const requestNotificationPermission = () => {
 
     pushEvent();
   }
-};
-
-const checkPermissions = (event) => {
-  console.log("AAAAAAAAAAA")
-  if (window.Notification && Notification.permission === "granted") {
-    notification(event);
-  } else if (window.Notification && Notification.permission !== "denied") {
-    Notification.requestPermission((status) => {
-      if (status === "granted") {
-        notification(event);
-      } else {
-        Toastify({
-          text: "You denied or dismissed permissions to notifications.",
-          ...toastOptions,
-        }).showToast();
-      }
-
-      window.location.reload();
-    });
-  } else {
-    Toastify({
-      text: "You denied permissions to notifications. Please go to your browser or phone setting to allow notifications.",
-      ...toastOptions,
-    }).showToast();
-  }
-};
-
-const notification = (event) => {
-  pushEvent();
-
-  console.log(event)
-
-  const notifBody = `Body`;
-  const notifImg = `https://r2-cdn.insignia.live/Shl9AF66oSfXRmcAdNj580DyHtpLfm8ETKBnnD1i.png`;
-  const options = {
-    body: notifBody,
-    icon: notifImg,
-    badge: notifImg,
-  };
-
-  window.swRegistration.showNotification("PWA Notification!", options);
 };
