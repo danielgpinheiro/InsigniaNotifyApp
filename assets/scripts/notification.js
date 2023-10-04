@@ -1,4 +1,5 @@
 import { getToken, getMessaging } from "firebase/messaging";
+import { vapidKey } from "./firebase-config"
 
 let self;
 
@@ -29,7 +30,7 @@ const pushEvent = async () => {
   };
 
   const messaging = getMessaging()
-  const token = await getToken(messaging, { vapidKey: "BJeYdMFdTKq6evbhymLyg8Jv4cQri-dql6124j4L2mMG_xXdbucofUIqHu2kJuKNHkO0WiwJAWd9XJzH7ZZ0DC4" })
+  const token = await getToken(messaging, { vapidKey: vapidKey })
 
   console.log('token do usuário:', token)
 
