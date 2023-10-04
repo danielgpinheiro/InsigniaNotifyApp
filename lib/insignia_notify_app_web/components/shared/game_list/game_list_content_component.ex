@@ -52,11 +52,11 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
         </form>
       </div>
 
-      <div class="w-full lg:w-[60%] flex-col pb-2 lg:pb-0 relative">
+      <div class="w-full lg:w-[60%] flex-col pb-2 lg:pb-0 relative min-h-[200px]">
         <h3 class="font-chakra text-white text-lg p-5">Matches</h3>
 
         <%= if Map.has_key?(@matches, :head) do %>
-          <div class="max-h-[200px] overflow-y-auto overflow-x-hidden relative">
+          <div class="max-h-[200px] overflow-y-auto overflow-x-hidden relative pr-6 lg:pr-0">
             <ul class="table border-collapse table-fixed w-full ml-5">
               <li class="table-row">
                 <%= for head <- @matches.head do %>

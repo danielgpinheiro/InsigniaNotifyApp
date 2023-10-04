@@ -29,7 +29,7 @@ import {
 import topbar from "../vendor/topbar";
 
 import { requestNotificationPermission } from "../scripts/notification";
-import { playSound } from "../scripts/sound";
+import { playSound, play } from "../scripts/sound";
 import { toggleAccordion } from "../scripts/toggle_accordion";
 
 import { initializeApp } from 'firebase/app';
@@ -63,15 +63,31 @@ const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
 
 onMessage(messaging, (payload) => {
-  console.log(payload)
-
-  const notifBody = `Body`;
-  const notifImg = `https://r2-cdn.insignia.live/Shl9AF66oSfXRmcAdNj580DyHtpLfm8ETKBnnD1i.png`;
   const options = {
-    body: notifBody,
-    icon: notifImg,
-    badge: notifImg,
+    body: payload.notification.body,
+    icon: payload.notification.image,
+    badge: payload.notification.image,
   };
 
-  new Notification("PWA Notification!", options);
+  const toastOptions = {
+    duration: 6000,
+    newWindow: true,
+    gravity: "top",
+    position: "right",
+    style: {
+      background: "linear-gradient(135deg, rgb(141, 193, 3), rgb(99, 202, 20))",
+      borderRadius: "6px",
+    },
+  };
+  
+  play({ detail: payload.data.sound })
+
+  if (document.hasFocus()) {
+    Toastify({
+      text: `${payload.notification.title} \n ${payload.notification.body}`,
+      ...toastOptions,
+    }).showToast();
+  } else {
+    new Notification(payload.notification.title, options);
+  }
 });

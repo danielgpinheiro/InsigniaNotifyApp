@@ -6,7 +6,7 @@ export const playSound = {
   }
 }
 
-const play = (event) => {
+export const play = (event) => {
   const soundName = event.detail
   const ctx = new AudioContext()
 

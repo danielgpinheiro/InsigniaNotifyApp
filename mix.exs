@@ -50,7 +50,8 @@ defmodule InsigniaNotifyApp.MixProject do
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:webauthn_components, "~> 0.6.4"},
       {:floki, "~> 0.34.0"},
-      {:httpoison, "~> 2.0"}
+      {:httpoison, "~> 2.0"},
+      {:goth, "~> 1.4.2"}
     ]
   end
 

@@ -44,8 +44,6 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
   def mount(socket) do
     if connected?(socket), do: tick()
 
-    NotificationController.test()
-
     {:ok, socket |> assign(filter: "") |> assign(games: get_games("", ""))}
   end
 
@@ -67,16 +65,28 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
 
     user_id = socket.assigns.current_user.id
     filter = socket.assigns.filter
+    firebase_user_token = socket.assigns.firebase_user_token
+
+    if firebase_user_token != "",
+      do:
+        NotificationController.check_to_send_notification(%{
+          user_id: user_id,
+          firebase_user_token: firebase_user_token
+        })
 
     {:ok, socket |> assign(games: get_games(user_id, filter))}
   end
 
-  def update(%{current_user: current_user} = _assigns, socket) do
+  def update(
+        %{current_user: current_user, firebase_user_token: firebase_user_token} = _assigns,
+        socket
+      ) do
     filter = socket.assigns.filter
 
     {:ok,
      socket
      |> assign(current_user: current_user)
+     |> assign(firebase_user_token: firebase_user_token)
      |> assign(games: get_games(current_user.id, filter))}
   end
 

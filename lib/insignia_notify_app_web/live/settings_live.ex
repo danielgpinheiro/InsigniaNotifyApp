@@ -29,7 +29,7 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
           <span class="text-white pl-2">Back</span>
         </button>
 
-        <div class="w-full lg:w-[50%] flex flex-col p-6 relative">
+        <div class="w-full lg:w-[50%] flex flex-col p-6 pr-20 lg:pr-6 relative">
           <h3 class="text-white text-2xl mb-5">Notifications</h3>
 
           <form>
@@ -61,7 +61,7 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
           </form>
 
           <button
-            class="right-[-20px] bottom-[30px] absolute border-[1px] rounded-full w-8 h-8"
+            class="right-[30px] lg:right-[-20px] bottom-[30px] absolute border-[1px] rounded-full w-8 h-8"
             phx-click={JS.dispatch("playSound", detail: @sound)}
           >
             <i class="material-symbols-rounded text-white text-center">play_arrow</i>
@@ -98,20 +98,20 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
          socket
          |> assign(:sound, "beep")
          |> assign(notification_params: %{})
-         |> assign(firebaseUserToken: "")}
+         |> assign(firebase_user_token: "")}
     end
   end
 
   def handle_event("notification-params", %{"params" => params}, socket) do
     permissions = Map.get(params, "permissions")
-    firebaseUserToken = Map.get(params, "firebaseUserToken")
+    firebase_user_token = Map.get(params, "firebase_user_token")
 
     send_update(RequestNotificationPermissionComponent,
       id: :request_notification,
       notification_params: permissions
     )
 
-    {:noreply, socket |> assign(firebaseUserToken: firebaseUserToken)}
+    {:noreply, socket |> assign(firebase_user_token: firebase_user_token)}
   end
 
   def handle_event("delete-account", _, socket) do

@@ -25,7 +25,12 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
         stats={@stats}
       />
 
-      <.live_component module={GameListComponent} id={:game_list} current_user={@current_user} />
+      <.live_component
+        module={GameListComponent}
+        id={:game_list}
+        current_user={@current_user}
+        firebase_user_token={@firebase_user_token}
+      />
 
       <FooterComponent.footer />
     </section>
@@ -38,19 +43,19 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
       socket
       |> assign(stats: %{})
       |> assign(notification_params: %{})
-      |> assign(firebaseUserToken: "")
+      |> assign(firebase_user_token: "")
     }
   end
 
   def handle_event("notification-params", %{"params" => params}, socket) do
     permissions = Map.get(params, "permissions")
-    firebaseUserToken = Map.get(params, "firebaseUserToken")
+    firebase_user_token = Map.get(params, "firebaseUserToken")
 
     send_update(RequestNotificationPermissionComponent,
       id: :request_notification,
       notification_params: permissions
     )
 
-    {:noreply, socket |> assign(firebaseUserToken: firebaseUserToken)}
+    {:noreply, socket |> assign(firebase_user_token: firebase_user_token)}
   end
 end

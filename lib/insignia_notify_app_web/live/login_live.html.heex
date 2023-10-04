@@ -1,4 +1,10 @@
 <section class="flex items-center justify-center w-full h-full p-2">
+  <.live_component
+    module={RequestNotificationPermissionComponent}
+    id={:request_notification}
+    notification_params={@notification_params}
+  />
+
   <div class="w-full max-w-xs">
     <.live_component module={SupportComponent} id="support-component" />
 
