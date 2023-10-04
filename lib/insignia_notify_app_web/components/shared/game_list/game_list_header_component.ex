@@ -50,7 +50,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListHeaderComponent do
                 else:
                   "material-symbols-rounded text-gray-300 hover:text-xbox-green cursor-pointer disabled"
             }
-            title="Xbox Live Aware"
+            data-tippy-content="Xbox Live Aware"
           >
             person
           </i>
@@ -61,7 +61,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListHeaderComponent do
                 else:
                   "material-symbols-rounded text-gray-300 hover:text-xbox-green cursor-pointer disabled"
             }
-            title="Matchmaking"
+            data-tippy-content="Matchmaking"
           >
             language
           </i>
@@ -72,7 +72,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListHeaderComponent do
                 else:
                   "material-symbols-rounded text-gray-300 hover:text-xbox-green cursor-pointer disabled"
             }
-            title="Leaderboards"
+            data-tippy-content="Leaderboards"
           >
             leaderboard
           </i>
@@ -83,7 +83,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListHeaderComponent do
                 else:
                   "material-symbols-rounded text-gray-300 hover:text-xbox-green cursor-pointer disabled"
             }
-            title="User Generated Content"
+            data-tippy-content="User Generated Content"
           >
             extension
           </i>

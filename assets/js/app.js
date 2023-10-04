@@ -91,3 +91,8 @@ onMessage(messaging, (payload) => {
     new Notification(payload.notification.title, options);
   }
 });
+
+window.addEventListener("load", () => {
+  // Tippy
+  tippy('[data-tippy-content]')
+})
