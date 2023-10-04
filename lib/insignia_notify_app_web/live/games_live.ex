@@ -38,15 +38,19 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
       socket
       |> assign(stats: %{})
       |> assign(notification_params: %{})
+      |> assign(firebaseUserToken: "")
     }
   end
 
   def handle_event("notification-params", %{"params" => params}, socket) do
+    permissions = Map.get(params, "permissions")
+    firebaseUserToken = Map.get(params, "firebaseUserToken")
+
     send_update(RequestNotificationPermissionComponent,
       id: :request_notification,
-      notification_params: params
+      notification_params: permissions
     )
 
-    {:noreply, socket}
+    {:noreply, socket |> assign(firebaseUserToken: firebaseUserToken)}
   end
 end

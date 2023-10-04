@@ -94,17 +94,24 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
         {:ok, socket |> assign(:sound, notification_sound) |> assign(notification_params: %{})}
 
       {:error, _} ->
-        {:ok, socket |> assign(:sound, "beep") |> assign(notification_params: %{})}
+        {:ok,
+         socket
+         |> assign(:sound, "beep")
+         |> assign(notification_params: %{})
+         |> assign(firebaseUserToken: "")}
     end
   end
 
   def handle_event("notification-params", %{"params" => params}, socket) do
+    permissions = Map.get(params, "permissions")
+    firebaseUserToken = Map.get(params, "firebaseUserToken")
+
     send_update(RequestNotificationPermissionComponent,
       id: :request_notification,
-      notification_params: params
+      notification_params: permissions
     )
 
-    {:noreply, socket}
+    {:noreply, socket |> assign(firebaseUserToken: firebaseUserToken)}
   end
 
   def handle_event("delete-account", _, socket) do

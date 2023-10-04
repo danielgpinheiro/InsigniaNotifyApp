@@ -5,6 +5,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
 
   alias InsigniaNotifyAppWeb.GamesController
   alias InsigniaNotifyAppWeb.FilterController
+  alias InsigniaNotifyAppWeb.NotificationController
   alias InsigniaNotifyAppWeb.Shared.GameList.GameListHeaderComponent
   alias InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent
 
@@ -42,6 +43,8 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
 
   def mount(socket) do
     if connected?(socket), do: tick()
+
+    NotificationController.test()
 
     {:ok, socket |> assign(filter: "") |> assign(games: get_games("", ""))}
   end

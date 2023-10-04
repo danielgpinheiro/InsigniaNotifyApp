@@ -92,6 +92,7 @@ defmodule InsigniaNotifyAppWeb do
       # Controllers
       import InsigniaNotifyAppWeb.GamesController
       import InsigniaNotifyAppWeb.FilterController
+      import InsigniaNotifyAppWeb.NotificationController
       import InsigniaNotifyAppWeb.SettingsController
 
       # Shortcut for generating JS commands

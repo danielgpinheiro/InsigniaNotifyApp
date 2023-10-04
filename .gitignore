@@ -39,6 +39,8 @@ npm-debug.log
 
 .env
 
+# Firebase Files
 /priv/static/firebase-config.js
 /assets/js/firebase-config.js
+insignia-notify-firebase-adminsdk.json
 

@@ -1,5 +1,5 @@
 import { getToken, getMessaging } from "firebase/messaging";
-import { vapidKey } from "./firebase-config"
+import { vapidKey } from "../js/firebase-config"
 
 let self;
 
@@ -20,6 +20,8 @@ const isSupported = () =>
   "PushManager" in window;
 
 const pushEvent = async () => {
+  let token = ""
+
   const isIOSButNotInstalled =
     "serviceWorker" in navigator && window.navigator.standalone === false;
   const permission = isSupported() ? Notification.permission : "";
@@ -29,10 +31,10 @@ const pushEvent = async () => {
     permission: permission,
   };
 
-  const messaging = getMessaging()
-  const token = await getToken(messaging, { vapidKey: vapidKey })
-
-  console.log('token do usuário:', token)
+  if (window.Notification && Notification.permission === "granted") {
+    const messaging = getMessaging()
+    token = await getToken(messaging, { vapidKey: vapidKey })
+  }
 
   if (window.location.pathname !== "/login") {
     self.pushEvent("notification-params", {

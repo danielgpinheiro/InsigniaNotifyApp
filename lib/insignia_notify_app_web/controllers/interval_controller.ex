@@ -34,7 +34,7 @@ defmodule InsigniaNotifyAppWeb.IntervalController do
     Process.send_after(self(), :get_and_parse_job, interval_time)
 
     IO.puts("Get and Parse Job Executed - #{clock}")
-    # GamesController.get_and_parse()
+    GamesController.get_and_parse()
 
     {:noreply, state}
   end
