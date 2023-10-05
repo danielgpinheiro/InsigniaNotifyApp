@@ -11,7 +11,7 @@ defmodule InsigniaNotifyAppWeb.IntervalController do
   def init(opts) do
     IO.puts("InsigniaNotifyAppWeb.IntervalController init")
 
-    {_, interval_time_string} = Application.get_env(:insignia_notify_app, :interval_time)
+    {_, interval_time_string} = System.fetch_env("INTERVAL_TIME")
     {interval_time, _} = Integer.parse(interval_time_string)
 
     Process.send_after(self(), :get_and_parse_job, interval_time)
@@ -28,7 +28,7 @@ defmodule InsigniaNotifyAppWeb.IntervalController do
       |> DateTime.to_time()
       |> Time.to_iso8601()
 
-    {_, interval_time_string} = Application.get_env(:insignia_notify_app, :interval_time)
+    {_, interval_time_string} = System.fetch_env("INTERVAL_TIME")
     {interval_time, _} = Integer.parse(interval_time_string)
 
     Process.send_after(self(), :get_and_parse_job, interval_time)

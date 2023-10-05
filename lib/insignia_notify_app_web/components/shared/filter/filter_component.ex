@@ -123,7 +123,7 @@ defmodule InsigniaNotifyAppWeb.Shared.Filter.FilterComponent do
   end
 
   defp tick() do
-    {_, interval_time_string} = Application.get_env(:insignia_notify_app, :interval_time)
+    {_, interval_time_string} = System.fetch_env("INTERVAL_TIME")
     {interval_time, _} = Integer.parse(interval_time_string)
 
     send_update_after(__MODULE__, %{id: :filter_form, action: :tick}, interval_time + 1000)

@@ -14,7 +14,7 @@ defmodule InsigniaNotifyAppWeb.GamesController do
   end
 
   def get_and_parse do
-    {_, base_url} = Application.get_env(:insignia_notify_app, :base_url)
+    {_, base_url} = System.fetch_env("BASE_URL")
 
     GetInsigniaData.get(base_url)
     |> parse_document()
@@ -71,9 +71,9 @@ defmodule InsigniaNotifyAppWeb.GamesController do
 
   defp parse_document({:ok, body}) do
     {_, games_table_rows_selector} =
-      Application.get_env(:insignia_notify_app, :games_table_rows_selector)
+      System.fetch_env("TABLE_ROWS_SELECTOR")
 
-    {_, stats_selector} = Application.get_env(:insignia_notify_app, :stats_selector)
+    {_, stats_selector} = System.fetch_env("STATS_SELECTOR")
 
     document = Floki.parse_document(body)
 
