@@ -73,10 +73,6 @@ defmodule InsigniaNotifyAppWeb.LoginLive do
     permissions = Map.get(params, "permissions")
     firebase_user_token = Map.get(params, "firebaseUserToken")
 
-    IO.inspect("==========================")
-    IO.inspect(permissions)
-    IO.inspect(firebase_user_token)
-
     send_update(RequestNotificationPermissionComponent,
       id: :request_notification,
       notification_params: permissions

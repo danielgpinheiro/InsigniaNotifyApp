@@ -2,6 +2,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
   use InsigniaNotifyAppWeb, :live_component
 
   alias InsigniaNotifyAppWeb.GamesController
+  alias InsigniaNotifyAppWeb.NotificationController
 
   def render(assigns) do
     ~H"""
@@ -14,7 +15,16 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
             <span class="font-base font-roboto text-gray-300">Notify when have new sessions</span>
 
             <label class="slideon">
-              <input type="checkbox" class="slideon slideon-auto slideon-success" />
+              <input
+                id={"new_sessions-#{@id}"}
+                type="checkbox"
+                name={"new_sessions-#{@id}"}
+                value={@new_sessions}
+                checked={@new_sessions}
+                phx-change="change-game-notifications"
+                phx-target={@myself}
+                class="slideon slideon-auto slideon-success"
+              />
               <span class="slideon-slider"></span>
             </label>
           </div>
@@ -23,18 +33,34 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
             <span class="font-base font-roboto text-gray-300">Notify when sessions end</span>
 
             <label class="slideon">
-              <input type="checkbox" class="slideon slideon-auto slideon-success" />
+              <input
+                id={"end_sessions-#{@id}"}
+                type="checkbox"
+                name={"end_sessions-#{@id}"}
+                checked={@end_sessions}
+                phx-change="change-game-notifications"
+                phx-target={@myself}
+                class="slideon slideon-auto slideon-success"
+              />
               <span class="slideon-slider"></span>
             </label>
           </div>
 
-          <div class="flex justify-between mb-6">
+          <%!-- <div class="flex justify-between mb-6">
             <span class="font-base font-roboto text-gray-300">
               Notify when sessions have new players
             </span>
 
             <label class="slideon">
-              <input type="checkbox" class="slideon slideon-auto slideon-success" />
+              <input
+                id={"new_players-#{@id}"}
+                type="checkbox"
+                name={"new_players-#{@id}"}
+                checked={@new_players}
+                phx-change="change-game-notifications"
+                phx-target={@myself}
+                class="slideon slideon-auto slideon-success"
+              />
               <span class="slideon-slider"></span>
             </label>
           </div>
@@ -45,10 +71,18 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
             </span>
 
             <label class="slideon">
-              <input type="checkbox" class="slideon slideon-auto slideon-success" />
+              <input
+                id={"fewer_players-#{@id}"}
+                type="checkbox"
+                name={"fewer_players-#{@id}"}
+                checked={@fewer_players}
+                phx-change="change-game-notifications"
+                phx-target={@myself}
+                class="slideon slideon-auto slideon-success"
+              />
               <span class="slideon-slider"></span>
             </label>
-          </div>
+          </div> --%>
         </form>
       </div>
 
@@ -87,7 +121,13 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
   end
 
   def mount(socket) do
-    {:ok, socket |> assign(matches: %{})}
+    {:ok,
+     socket
+     |> assign(matches: %{})
+     |> assign(new_sessions: false)
+     |> assign(end_sessions: false)
+     |> assign(new_players: false)
+     |> assign(fewer_players: false)}
   end
 
   def update(%{action: :content_opened, opened: opened}, socket) do
@@ -103,14 +143,52 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
     end
   end
 
-  def update(%{current_user: current_user, content: content} = _assigns, socket) do
-    {:ok,
-     socket
-     |> assign(current_user: current_user)
-     |> assign(content: content)}
+  def update(%{current_user: current_user, content: content, id: id} = _assigns, socket) do
+    case NotificationController.get_game_notification(%{
+           user_id: current_user.id,
+           game_serial: String.replace(id, "game_list_content_", "")
+         }) do
+      {:ok, params} ->
+        {:ok,
+         socket
+         |> assign(current_user: current_user)
+         |> assign(content: content)
+         |> assign(id: id)
+         |> assign(new_sessions: params.new_sessions)
+         |> assign(end_sessions: params.end_sessions)
+         |> assign(new_players: params.new_players)
+         |> assign(fewer_players: params.fewer_players)}
+
+      {:error, _} ->
+        {:ok,
+         socket
+         |> assign(current_user: current_user)
+         |> assign(content: content)
+         |> assign(id: id)}
+    end
   end
 
   def update(_, socket) do
     {:ok, socket}
+  end
+
+  def handle_event(
+        "change-game-notifications",
+        params,
+        socket
+      ) do
+    user_id = socket.assigns.current_user.id
+    target = Enum.at(Map.get(params, "_target"), 0)
+    notification_name = String.replace(target, "-#{socket.assigns.id}", "")
+
+    %{
+      game_serial: String.replace(socket.assigns.id, "game_list_content_", ""),
+      notification_name: notification_name,
+      value: Map.get(params, target) == "on",
+      user_id: user_id
+    }
+    |> NotificationController.set_game_notification()
+
+    {:noreply, socket}
   end
 end
