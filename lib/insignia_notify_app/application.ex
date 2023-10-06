@@ -27,7 +27,7 @@ defmodule InsigniaNotifyApp.Application do
       InsigniaNotifyAppWeb.Endpoint,
 
       # Insignia HTML Crawler Interval Job
-      {InsigniaNotifyAppWeb.IntervalController, 0},
+      {InsigniaNotifyApp.Interval, 0},
 
       # Google Auth for Firebase FCM Send
       {Goth, name: InsigniaNotifyApp.Goth, source: source}

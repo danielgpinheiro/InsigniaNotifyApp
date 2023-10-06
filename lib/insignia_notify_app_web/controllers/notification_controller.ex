@@ -4,6 +4,7 @@ defmodule InsigniaNotifyAppWeb.NotificationController do
   alias InsigniaNotifyApp.Notifications
   alias InsigniaNotifyApp.Settings.Setting
   alias InsigniaNotifyAppWeb.Http.Api
+  alias InsigniaNotifyAppWeb.GamesController
   alias InsigniaNotifyAppWeb.SettingsController
 
   def set_game_notification(params) do
@@ -40,6 +41,23 @@ defmodule InsigniaNotifyAppWeb.NotificationController do
     Notifications.get_by(params)
   end
 
+  def notification_job do
+    games = GamesController.get_games()
+
+    :ets.tab2list(:user_data)
+    |> Enum.map(fn user ->
+      {user_id, firebase_user_token} = user
+
+      if firebase_user_token != "" do
+        check_to_send_notification(%{
+          user_id: user_id,
+          firebase_user_token: firebase_user_token,
+          games: games
+        })
+      end
+    end)
+  end
+
   def check_to_send_notification(params) do
     case Notifications.get_all_by_user_id(params.user_id) do
       {:error, _} ->
@@ -56,7 +74,7 @@ defmodule InsigniaNotifyAppWeb.NotificationController do
           game =
             Enum.find(params.games, fn game -> game.serial == game_notification.game_serial end)
 
-          if game.last_active_sessions < game.active_sessions and game.last_active_sessions == 0 and
+          if game.last_active_sessions < game.active_sessions and
                game_notification.new_sessions do
             notification_params
             |> Map.put(
@@ -68,7 +86,7 @@ defmodule InsigniaNotifyAppWeb.NotificationController do
             |> push_notification()
           end
 
-          if game.last_active_sessions > game.active_sessions and game.last_active_sessions > 0 and
+          if game.last_active_sessions > game.active_sessions and
                game_notification.end_sessions do
             notification_params
             |> Map.put(

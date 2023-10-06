@@ -6,12 +6,13 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
   alias InsigniaNotifyApp.Settings.Setting
   alias InsigniaNotifyAppWeb.SettingsController
 
+  alias InsigniaNotifyAppWeb.Shared.Footer.FooterComponent
   alias InsigniaNotifyAppWeb.Shared.Notification.RequestNotificationPermissionComponent
   alias InsigniaNotifyAppWeb.Shared.Header.HeaderComponent
 
   def render(assigns) do
     ~H"""
-    <section>
+    <section class="w-full h-[100vh] flex flex-col justify-between">
       <.live_component module={HeaderComponent} id={:header} current_user={@current_user} />
 
       <.live_component
@@ -82,6 +83,8 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
           </button>
         </div>
       </div>
+
+      <FooterComponent.footer />
     </section>
     """
   end
@@ -97,8 +100,7 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
         {:ok,
          socket
          |> assign(:sound, "beep")
-         |> assign(notification_params: %{})
-         |> assign(firebase_user_token: "")}
+         |> assign(notification_params: %{})}
     end
   end
 
@@ -111,7 +113,12 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
       notification_params: permissions
     )
 
-    {:noreply, socket |> assign(firebase_user_token: firebase_user_token)}
+    :ets.insert(
+      :user_data,
+      {"#{socket.assigns.current_user.id}", firebase_user_token}
+    )
+
+    {:noreply, socket}
   end
 
   def handle_event("delete-account", _, socket) do

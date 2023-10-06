@@ -27,6 +27,8 @@ defmodule InsigniaNotifyAppWeb.Router do
 
     post "/session", SessionController, :create
     delete "/session", SessionController, :delete
+
+    get "/check-notifications", NotificationController, :check_to_send_notification
   end
 
   # Unprotected LiveViews

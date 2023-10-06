@@ -6,7 +6,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
 
   def render(assigns) do
     ~H"""
-    <div class="w-full bg-gray-600 flex overflow-hidden transition-[max-height] ease-out max-h-0 will-change-[max-height] accordion-content flex-wrap lg:flex-nowrap">
+    <div class="w-full bg-gray-600 flex overflow-hidden transition-[max-height] ease-out max-h-0 accordion-content flex-wrap lg:flex-nowrap">
       <div class="w-full lg:w-[40%] flex-col">
         <h3 class="font-chakra text-white text-lg p-5">Notifications</h3>
 
@@ -46,7 +46,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
             </label>
           </div>
 
-          <%!-- <div class="flex justify-between mb-6">
+          <div class="flex justify-between mb-6 opacity-0 pointer-events-none">
             <span class="font-base font-roboto text-gray-300">
               Notify when sessions have new players
             </span>
@@ -65,7 +65,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
             </label>
           </div>
 
-          <div class="flex justify-between mb-6">
+          <div class="flex justify-between mb-6 opacity-0 pointer-events-none">
             <span class="font-base font-roboto text-gray-300">
               Notify when sessions have fewer players
             </span>
@@ -82,7 +82,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
               />
               <span class="slideon-slider"></span>
             </label>
-          </div> --%>
+          </div>
         </form>
       </div>
 

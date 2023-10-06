@@ -3,9 +3,9 @@ defmodule InsigniaNotifyAppWeb.Shared.Notification.RequestNotificationPermission
 
   def render(assigns) do
     ~H"""
-    <div>
+    <div class="fixed bottom-0 right-0 z-10">
       <%= if Map.get(@notification_params, "permission") != "granted" do %>
-        <div class="fixed bottom-0 right-0 z-10 p-2">
+        <div class=" p-2">
           <div class="w-full lg:w-[300px] bg-[#fff4e5] rounded text-[#000]">
             <%= if Map.get(@notification_params, "isIOSButNotInstalled") do %>
               <div class="pb-4 px-3 pt-3">

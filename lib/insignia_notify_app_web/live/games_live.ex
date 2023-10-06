@@ -25,12 +25,7 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
         stats={@stats}
       />
 
-      <.live_component
-        module={GameListComponent}
-        id={:game_list}
-        current_user={@current_user}
-        firebase_user_token={@firebase_user_token}
-      />
+      <.live_component module={GameListComponent} id={:game_list} current_user={@current_user} />
 
       <FooterComponent.footer />
     </section>
@@ -43,7 +38,6 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
       socket
       |> assign(stats: %{})
       |> assign(notification_params: %{})
-      |> assign(firebase_user_token: "")
     }
   end
 
@@ -56,6 +50,11 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
       notification_params: permissions
     )
 
-    {:noreply, socket |> assign(firebase_user_token: firebase_user_token)}
+    :ets.insert(
+      :user_data,
+      {"#{socket.assigns.current_user.id}", firebase_user_token}
+    )
+
+    {:noreply, socket}
   end
 end

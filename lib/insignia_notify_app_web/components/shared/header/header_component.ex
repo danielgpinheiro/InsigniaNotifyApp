@@ -16,10 +16,10 @@ defmodule InsigniaNotifyAppWeb.Shared.Header.HeaderComponent do
       </div>
 
       <div class="flex">
-        <button class="flex items-center justify-center w-[64px] h-[64px]">
+        <%!-- <button class="flex items-center justify-center w-[64px] h-[64px]">
           <i class="material-symbols-rounded !text-[24px] text-white">notifications</i>
           <!-- <i class="material-symbols-rounded !text-[24px] text-white">notifications_off</i> -->
-        </button>
+        </button> --%>
 
         <button
           class="flex items-center justify-center w-[64px] h-[64px]"

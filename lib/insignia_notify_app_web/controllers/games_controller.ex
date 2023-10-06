@@ -1,14 +1,14 @@
 defmodule InsigniaNotifyAppWeb.GamesController do
   use InsigniaNotifyAppWeb, :controller
 
-  alias InsigniaNotifyApp.Games
-
   alias InsigniaNotifyAppWeb.Html.Find
   alias InsigniaNotifyAppWeb.Http.Api
   alias InsigniaNotifyAppWeb.Http.GetInsigniaData
 
   def init do
     :ets.new(:stats, [:set, :named_table])
+    :ets.new(:user_data, [:set, :named_table, :public])
+    :ets.new(:games, [:set, :named_table])
 
     get_and_parse()
   end
@@ -51,7 +51,14 @@ defmodule InsigniaNotifyAppWeb.GamesController do
   end
 
   def get_games do
-    Games.get_all()
+    list = :ets.tab2list(:games)
+
+    if length(list) > 0 do
+      {_, games} = list |> Enum.at(0)
+      games
+    else
+      []
+    end
   end
 
   def get_game_matches(url) do
@@ -95,31 +102,33 @@ defmodule InsigniaNotifyAppWeb.GamesController do
   end
 
   defp update_game(games) do
-    Enum.map(games, fn game ->
-      case Games.get(game.serial) do
-        {:ok, _} ->
-          {_, copy_game} = Games.get(game.serial)
+    cached_games = get_games()
 
+    updated_games =
+      Enum.map(games, fn game ->
+        filtered_game =
+          Enum.find(cached_games, fn cached_game -> game.serial == cached_game.serial end)
+
+        if filtered_game != nil do
           last_active_users =
-            if Map.has_key?(copy_game, :active_users), do: copy_game.active_users, else: 0
+            if Map.has_key?(filtered_game, :active_users), do: filtered_game.active_users, else: 0
 
           last_active_sessions =
-            if Map.has_key?(copy_game, :active_sessions), do: copy_game.active_sessions, else: 0
+            if Map.has_key?(filtered_game, :active_sessions),
+              do: filtered_game.active_sessions,
+              else: 0
 
-          modified_game =
-            game
-            |> Map.put(:last_active_users, last_active_users)
-            |> Map.put(:last_active_sessions, last_active_sessions)
-
-          Games.update(copy_game, modified_game)
-
-        {:error, _} ->
+          game
+          |> Map.put(:last_active_users, last_active_users)
+          |> Map.put(:last_active_sessions, last_active_sessions)
+        else
           game
           |> Map.put(:last_active_users, 0)
           |> Map.put(:last_active_sessions, 0)
-          |> Games.create()
-      end
-    end)
+        end
+      end)
+
+    :ets.insert(:games, {:games_list, updated_games})
   end
 
   defp update_stats(stats) do

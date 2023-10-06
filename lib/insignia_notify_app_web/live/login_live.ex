@@ -11,6 +11,7 @@ defmodule InsigniaNotifyAppWeb.LoginLive do
   alias InsigniaNotifyApp.Identity.User
   alias InsigniaNotifyApp.Identity.UserToken
 
+  alias InsigniaNotifyAppWeb.Shared.Footer.FooterComponent
   alias InsigniaNotifyAppWeb.Shared.Notification.RequestNotificationPermissionComponent
 
   alias WebauthnComponents.SupportComponent

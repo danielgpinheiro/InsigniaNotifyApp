@@ -1,99 +1,102 @@
-<section class="flex items-center justify-center w-full h-full p-2">
-  <.live_component
-    module={RequestNotificationPermissionComponent}
-    id={:request_notification}
-    notification_params={@notification_params}
-  />
+<section class="flex flex-col w-full h-[100vh] justify-between">
+  <div class="flex items-center justify-center h-full w-full py-40 lg:py-0">
+    <.live_component
+      module={RequestNotificationPermissionComponent}
+      id={:request_notification}
+      notification_params={@notification_params}
+    />
 
-  <div class="w-full max-w-xs">
-    <.live_component module={SupportComponent} id="support-component" />
+    <div class="w-full max-w-xs">
+      <.live_component module={SupportComponent} id="support-component" />
 
-    <.simple_form
-      :let={form}
-      :if={@form}
-      for={@form}
-      phx-change="update-form"
-      phx-submit={JS.dispatch("click", to: "#registration-component")}
-      class="bg-gray-700 shadow-md rounded px-8 pt-6 pb-8 mb-4"
-    >
-      <img src="/images/logo.png" class="w-[48px] mx-auto mb-5" />
+      <.simple_form
+        :let={form}
+        :if={@form}
+        for={@form}
+        phx-change="update-form"
+        phx-submit={JS.dispatch("click", to: "#registration-component")}
+        class="bg-gray-700 shadow-md rounded px-8 pt-6 pb-8 mb-4"
+      >
+        <img src="/images/logo.png" class="w-[48px] mx-auto mb-5" />
 
-      <div class="flex flex-wrap -mx-3 mb-6">
-        <div class="w-full px-3 mb-6 md:mb-0">
-          <label
-            class="block uppercase tracking-wide text-white text-xs font-bold font-chakra mb-2"
-            for="grid-first-name"
+        <div class="flex flex-wrap -mx-3 mb-6">
+          <div class="w-full px-3 mb-6 md:mb-0">
+            <label
+              class="block uppercase tracking-wide text-white text-xs font-bold font-chakra mb-2"
+              for="grid-first-name"
+            >
+              E-mail
+            </label>
+            <.input type="email" field={form[:email]} phx-debounce="250" />
+          </div>
+        </div>
+
+        <div class={"flex flex-col items-center #{if @form.source.valid? == false do 'pointer-events-none grayscale' end}"}>
+          <.live_component
+            module={AuthenticationComponent}
+            id="authentication-component"
+            display_text="Sign In"
+            show_icon?={false}
+            class="bg-xbox-green text-white font-bold py-2 px-4 rounded mb-5"
+          />
+
+          <.live_component
+            module={RegistrationComponent}
+            id="registration-component"
+            app={InsigniaNotifyApp}
+            show_icon?={false}
+            display_text="Register"
+            class="bg-xbox-green text-white font-bold py-2 px-4 rounded mb-5"
           >
-            E-mail
-          </label>
-          <.input type="email" field={form[:email]} phx-debounce="250" />
+          </.live_component>
         </div>
-      </div>
 
-      <div class={"flex flex-col items-center #{if @form.source.valid? == false do 'pointer-events-none grayscale' end}"}>
-        <.live_component
-          module={AuthenticationComponent}
-          id="authentication-component"
-          display_text="Sign In"
-          show_icon?={false}
-          class="bg-xbox-green text-white font-bold py-2 px-4 rounded mb-5"
-        />
+        <details class="grid gap-4 bg-gray-500 ring-1 ring-gray-500 shadow-lg rounded group text-white overflow-hidden">
+          <summary class={[
+            "px-4 py-2 cursor-pointer transition select-none",
+            "bg-gray-600 font-semibold",
+            "rounted-t-lg rounded-b-lg group-open:rounded-b-none",
+            "group-open:border-b-2 group-open:border-gray-600"
+          ]}>
+            Where's the password?
+          </summary>
 
-        <.live_component
-          module={RegistrationComponent}
-          id="registration-component"
-          app={InsigniaNotifyApp}
-          show_icon?={false}
-          display_text="Register"
-          class="bg-xbox-green text-white font-bold py-2 px-4 rounded mb-5"
-        >
-        </.live_component>
-      </div>
+          <div class="p-4 text-justify grid gap-2">
+            <p>
+              This application uses a new technology that replaces passwords and temporary codes.
+            </p>
 
-      <details class="grid gap-4 bg-gray-500 ring-1 ring-gray-500 shadow-lg rounded group text-white overflow-hidden">
-        <summary class={[
-          "px-4 py-2 cursor-pointer transition select-none",
-          "bg-gray-600 font-semibold",
-          "rounted-t-lg rounded-b-lg group-open:rounded-b-none",
-          "group-open:border-b-2 group-open:border-gray-600"
-        ]}>
-          Where's the password?
-        </summary>
+            <p>
+              <a href="https://fidoalliance.org/passkeys/" class="font-bold" target="_blank">
+                Passkeys
+              </a>
+              are a more secure way to sign into applications. They use advanced technology embraced by security experts, while improving ease-of-use.
+            </p>
+          </div>
+        </details>
+      </.simple_form>
 
-        <div class="p-4 text-justify grid gap-2">
-          <p>
-            This application uses a new technology that replaces passwords and temporary codes.
-          </p>
+      <.simple_form
+        :let={f}
+        :if={@token_form}
+        for={@token_form}
+        method="post"
+        id="token-form"
+        action={~p"/session"}
+        phx-mounted={JS.dispatch("click", to: "#token-form button[type='submit']")}
+        class="hidden"
+      >
+        <.input type="text" field={f[:value]} label="Value" />
+        <.button type="submit">Go</.button>
+      </.simple_form>
 
-          <p>
-            <a href="https://fidoalliance.org/passkeys/" class="font-bold" target="_blank">
-              Passkeys
-            </a>
-            are a more secure way to sign into applications. They use advanced technology embraced by security experts, while improving ease-of-use.
-          </p>
-        </div>
-      </details>
-    </.simple_form>
+      <p class="text-center text-gray-500 text-xs">
+        The account is only for saving notification preferences, we will not use your email for spam
+        or disclose your data.
+      </p>
 
-    <.simple_form
-      :let={f}
-      :if={@token_form}
-      for={@token_form}
-      method="post"
-      id="token-form"
-      action={~p"/session"}
-      phx-mounted={JS.dispatch("click", to: "#token-form button[type='submit']")}
-      class="hidden"
-    >
-      <.input type="text" field={f[:value]} label="Value" />
-      <.button type="submit">Go</.button>
-    </.simple_form>
-
-    <p class="text-center text-gray-500 text-xs">
-      The account is only for saving notification preferences, we will not use your email for spam
-      or disclose your data.
-    </p>
-
-    <p class="text-white" id="vapid-key"></p>
+      <p class="text-white" id="vapid-key"></p>
+    </div>
   </div>
+  <FooterComponent.footer />
 </section>
