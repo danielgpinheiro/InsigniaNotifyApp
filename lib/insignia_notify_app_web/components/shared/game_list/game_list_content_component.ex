@@ -16,6 +16,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
 
             <label class="slideon">
               <input
+                disabled={!Map.has_key?(@matches, :head)}
                 id={"new_sessions-#{@id}"}
                 type="checkbox"
                 name={"new_sessions-#{@id}"}
@@ -34,6 +35,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
 
             <label class="slideon">
               <input
+                disabled={!Map.has_key?(@matches, :head)}
                 id={"end_sessions-#{@id}"}
                 type="checkbox"
                 name={"end_sessions-#{@id}"}
@@ -53,6 +55,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
 
             <label class="slideon">
               <input
+                disabled={!Map.has_key?(@matches, :head)}
                 id={"new_players-#{@id}"}
                 type="checkbox"
                 name={"new_players-#{@id}"}
@@ -72,6 +75,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
 
             <label class="slideon">
               <input
+                disabled={!Map.has_key?(@matches, :head)}
                 id={"fewer_players-#{@id}"}
                 type="checkbox"
                 name={"fewer_players-#{@id}"}
@@ -132,40 +136,48 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
 
   def update(%{action: :content_opened, opened: opened}, socket) do
     url = socket.assigns.content.url
+    user_id = socket.assigns.current_user.id
+    id = socket.assigns.id
 
     if opened do
       matches =
         GamesController.get_game_matches(url)
 
-      {:ok, socket |> assign(matches: matches)}
+      notification_params =
+        case NotificationController.get_game_notification(%{
+               user_id: user_id,
+               game_serial: String.replace(id, "game_list_content_", "")
+             }) do
+          {:ok, params} ->
+            params
+
+          {:error, _} ->
+            %{
+              new_sessions: false,
+              end_sessions: false,
+              new_players: false,
+              fewer_players: false
+            }
+        end
+
+      {:ok,
+       socket
+       |> assign(matches: matches)
+       |> assign(new_sessions: notification_params.new_sessions)
+       |> assign(end_sessions: notification_params.end_sessions)
+       |> assign(new_players: notification_params.new_players)
+       |> assign(fewer_players: notification_params.fewer_players)}
     else
       {:ok, socket |> assign(matches: %{})}
     end
   end
 
   def update(%{current_user: current_user, content: content, id: id} = _assigns, socket) do
-    case NotificationController.get_game_notification(%{
-           user_id: current_user.id,
-           game_serial: String.replace(id, "game_list_content_", "")
-         }) do
-      {:ok, params} ->
-        {:ok,
-         socket
-         |> assign(current_user: current_user)
-         |> assign(content: content)
-         |> assign(id: id)
-         |> assign(new_sessions: params.new_sessions)
-         |> assign(end_sessions: params.end_sessions)
-         |> assign(new_players: params.new_players)
-         |> assign(fewer_players: params.fewer_players)}
-
-      {:error, _} ->
-        {:ok,
-         socket
-         |> assign(current_user: current_user)
-         |> assign(content: content)
-         |> assign(id: id)}
-    end
+    {:ok,
+     socket
+     |> assign(current_user: current_user)
+     |> assign(content: content)
+     |> assign(id: id)}
   end
 
   def update(_, socket) do
