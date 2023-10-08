@@ -11,7 +11,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
   def render(assigns) do
     ~H"""
     <ul
-      class="game-list lg:w-[1140px] w-full my-0 mx-auto px-4 lg:px-0 min-h-[500px]"
+      class="game-list w-full lg:w-11/12 max-w-[1140px] my-0 mx-auto px-4 lg:px-0 min-h-[500px]"
       id="list"
       phx-hook="toggleAccordion"
     >
@@ -47,13 +47,13 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
   end
 
   def update(%{action: :filter_game_list, filter: filter}, socket) do
-    user_id = socket.assigns.current_user.id
+    user_id = ""
 
     {:ok, socket |> assign(filter: filter) |> assign(games: get_games(user_id, filter))}
   end
 
   def update(%{action: :order_by_game_list}, socket) do
-    user_id = socket.assigns.current_user.id
+    user_id = ""
     filter = socket.assigns.filter
 
     {:ok, socket |> assign(games: get_games(user_id, filter))}
@@ -62,7 +62,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
   def update(%{action: :tick}, socket) do
     tick()
 
-    user_id = socket.assigns.current_user.id
+    user_id = ""
     filter = socket.assigns.filter
 
     {:ok, socket |> assign(games: get_games(user_id, filter))}
@@ -77,7 +77,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
     {:ok,
      socket
      |> assign(current_user: current_user)
-     |> assign(games: get_games(current_user.id, filter))}
+     |> assign(games: get_games("", filter))}
   end
 
   def update(_assigns, socket) do

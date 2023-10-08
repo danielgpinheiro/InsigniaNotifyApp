@@ -11,7 +11,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListHeaderComponent do
           <img src="/images/logo.png" alt="" />
         </object>
 
-        <div class="game-info flex flex-col lg:ml-6 ml-2 justify-center w-[300px] shrink-0">
+        <div class="game-info flex flex-col lg:ml-6 ml-2 justify-center w-[275px] shrink-0">
           <a
             href={@content.url}
             target="_blank"

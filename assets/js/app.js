@@ -68,31 +68,8 @@ onMessage(messaging, (payload) => {
     icon: payload.notification.image,
     badge: payload.notification.image,
   };
-
-  const toastOptions = {
-    duration: 6000,
-    newWindow: true,
-    gravity: "top",
-    position: "right",
-    style: {
-      background: "linear-gradient(135deg, rgb(141, 193, 3), rgb(99, 202, 20))",
-      borderRadius: "6px",
-    },
-  };
   
   play({ detail: payload.data.sound })
 
-  if (document.hasFocus()) {
-    Toastify({
-      text: `${payload.notification.title} \n ${payload.notification.body}`,
-      ...toastOptions,
-    }).showToast();
-  } else {
-    new Notification(payload.notification.title, options);
-  }
+  new Notification(payload.notification.title, options);
 });
-
-window.addEventListener("load", () => {
-  // Tippy
-  tippy('[data-tippy-content]')
-})

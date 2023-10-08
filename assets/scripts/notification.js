@@ -50,6 +50,8 @@ export const requestNotificationPermission = {
       requestPermission();
     });
 
+    tippy('[data-tippy-content]')
+
     self = this;
 
     pushEvent();
@@ -68,7 +70,7 @@ const requestPermission = () => {
         }).showToast();
       }
 
-      window.location.reload();
+      window.location.reload(true);
     });
   } else {
     Toastify({

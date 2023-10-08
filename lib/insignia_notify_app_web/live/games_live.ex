@@ -1,4 +1,5 @@
 defmodule InsigniaNotifyAppWeb.GamesLive do
+  alias InsigniaNotifyAppWeb.FirebaseTokenController
   use InsigniaNotifyAppWeb, :live_view
 
   alias InsigniaNotifyAppWeb.Shared.Notification.RequestNotificationPermissionComponent
@@ -50,10 +51,10 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
       notification_params: permissions
     )
 
-    :ets.insert(
-      :user_data,
-      {"#{socket.assigns.current_user.id}", firebase_user_token}
-    )
+    FirebaseTokenController.change_firebase_token(%{
+      user_id: socket.assigns.current_user.id,
+      firebase_token: firebase_user_token
+    })
 
     {:noreply, socket}
   end

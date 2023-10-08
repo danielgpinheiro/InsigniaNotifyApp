@@ -1,6 +1,7 @@
 defmodule InsigniaNotifyAppWeb.NotificationController do
   use InsigniaNotifyAppWeb, :controller
 
+  alias InsigniaNotifyApp.FirebaseToken
   alias InsigniaNotifyApp.Notifications
   alias InsigniaNotifyApp.Settings.Setting
   alias InsigniaNotifyAppWeb.Http.Api
@@ -43,15 +44,13 @@ defmodule InsigniaNotifyAppWeb.NotificationController do
 
   def notification_job do
     games = GamesController.get_games()
+    {_, tokens} = FirebaseToken.get_all()
 
-    :ets.tab2list(:user_data)
-    |> Enum.map(fn user ->
-      {user_id, firebase_user_token} = user
-
-      if firebase_user_token != "" do
+    Enum.map(tokens, fn token ->
+      if token.firebase_token != nil do
         check_to_send_notification(%{
-          user_id: user_id,
-          firebase_user_token: firebase_user_token,
+          user_id: token.user_id,
+          firebase_user_token: token.firebase_token,
           games: games
         })
       end
