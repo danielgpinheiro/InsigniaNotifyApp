@@ -36,12 +36,14 @@ const pushEvent = async () => {
     token = await getToken(messaging, { vapidKey: vapidKey })
   }
 
-  self.pushEvent("notification-params", {
-    params: {
-      permissions: permissions,
-      firebaseUserToken: token
-    }
-  });
+  if (window.location.pathname !== "/login") {
+    self.pushEvent("notification-params", {
+      params: {
+        permissions: permissions,
+        firebaseUserToken: token
+      }
+    });
+  }
 };
 
 export const requestNotificationPermission = {

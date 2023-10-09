@@ -12,7 +12,6 @@ defmodule InsigniaNotifyAppWeb.LoginLive do
   alias InsigniaNotifyApp.Identity.UserToken
 
   alias InsigniaNotifyAppWeb.Shared.Footer.FooterComponent
-  alias InsigniaNotifyAppWeb.Shared.Notification.RequestNotificationPermissionComponent
 
   alias WebauthnComponents.SupportComponent
   alias WebauthnComponents.RegistrationComponent
@@ -23,8 +22,6 @@ defmodule InsigniaNotifyAppWeb.LoginLive do
     {
       :ok,
       socket
-      |> assign(notification_params: %{})
-      |> assign(firebase_user_token: "")
       |> push_navigate(to: ~p"/games", replace: true)
     }
   end
@@ -70,25 +67,10 @@ defmodule InsigniaNotifyAppWeb.LoginLive do
     }
   end
 
-  def handle_event("notification-params", %{"params" => params}, socket) do
-    permissions = Map.get(params, "permissions")
-    firebase_user_token = Map.get(params, "firebaseUserToken")
-
-    send_update(RequestNotificationPermissionComponent,
-      id: :request_notification,
-      notification_params: permissions
-    )
-
-    {:noreply,
-     socket
-     |> assign(firebase_user_token: firebase_user_token)
-     |> assign(notification_params: permissions)}
+  def handle_event(event, params, socket) do
+    Logger.warning(unhandled_event: {__MODULE__, event, params})
+    {:noreply, socket}
   end
-
-  # def handle_event(event, params, socket) do
-  #   Logger.warning(unhandled_event: {__MODULE__, event, params})
-  #   {:noreply, socket}
-  # end
 
   def handle_info({:passkeys_supported, supported?}, socket) do
     if supported? do

@@ -1,11 +1,5 @@
 <section class="flex flex-col w-full h-[100vh] justify-between">
   <div class="flex items-center justify-center h-full w-full py-40 lg:py-0">
-    <.live_component
-      module={RequestNotificationPermissionComponent}
-      id={:request_notification}
-      notification_params={@notification_params}
-    />
-
     <div class="w-full max-w-xs">
       <.live_component module={SupportComponent} id="support-component" />
 
@@ -27,7 +21,7 @@
             >
               E-mail
             </label>
-            <.input type="email" field={form[:email]} phx-debounce="250" />
+            <.input type="email" name="email" field={form[:email]} phx-debounce="250" />
           </div>
         </div>
 

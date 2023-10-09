@@ -17,12 +17,15 @@ defmodule InsigniaNotifyAppWeb.Shared.Filter.FilterComponent do
 
       <div class="flex items-center justify-between lg:flex-row flex-col">
         <div class="lg:mb-0 mb-6 text-center">
-          <span class="text-gray-300 font-chakra mr-5">
+          <span class="text-gray-300 font-chakra mr-2 lg:mr-5 lg:ml-0">
             <strong><%= @registered_users %></strong> Registered Users
           </span>
-          <span class="text-gray-300 font-chakra mr-5">
+          <span class="text-gray-300 font-chakra ml-2 lg:mr-5 lg:ml-0">
             <strong><%= @users_online_now %></strong> Users Online Now
           </span>
+
+          <br class="lg:hidden" />
+
           <span class="text-gray-300 font-chakra">
             <strong><%= @games_supported %></strong> Games Supported
           </span>

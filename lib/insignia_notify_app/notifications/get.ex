@@ -4,7 +4,7 @@ defmodule InsigniaNotifyApp.Notifications.Get do
 
   import Ecto.Query
 
-  def call(params) do
+  def get_by(params) do
     case Notification
          |> where(game_serial: ^params.game_serial)
          |> where(user_id: ^params.user_id)
@@ -14,7 +14,7 @@ defmodule InsigniaNotifyApp.Notifications.Get do
     end
   end
 
-  def call2(user_id) do
+  def get_all_by_user_id(user_id) do
     case Notification
          |> where(user_id: ^user_id)
          |> Repo.all() do
