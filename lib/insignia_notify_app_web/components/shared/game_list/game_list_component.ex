@@ -47,13 +47,13 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
   end
 
   def update(%{action: :filter_game_list, filter: filter}, socket) do
-    user_id = ""
+    user_id = socket.assigns.current_user.id
 
     {:ok, socket |> assign(filter: filter) |> assign(games: get_games(user_id, filter))}
   end
 
   def update(%{action: :order_by_game_list}, socket) do
-    user_id = ""
+    user_id = socket.assigns.current_user.id
     filter = socket.assigns.filter
 
     {:ok, socket |> assign(games: get_games(user_id, filter))}
@@ -62,7 +62,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
   def update(%{action: :tick}, socket) do
     tick()
 
-    user_id = ""
+    user_id = socket.assigns.current_user.id
     filter = socket.assigns.filter
 
     {:ok, socket |> assign(games: get_games(user_id, filter))}
@@ -73,11 +73,12 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
         socket
       ) do
     filter = socket.assigns.filter
+    user_id = current_user.id
 
     {:ok,
      socket
      |> assign(current_user: current_user)
-     |> assign(games: get_games("", filter))}
+     |> assign(games: get_games(user_id, filter))}
   end
 
   def update(_assigns, socket) do
