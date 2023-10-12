@@ -31,11 +31,17 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListHeaderComponent do
         </strong>
 
         <strong class="text-white text-sm flex flex-col text-center font-chakra relative px-6 after:content-['*'] after:absolute after:top-[calc(50%-2px)] after:right-0 after:w-[5px] after:h-[5px] last:after:hidden">
-          Active Users <span class="text-gray-300 text-base"><%= @content.active_users %></span>
+          Active Users
+          <span class="text-gray-300 text-base">
+            <%= if @content.has_matchmaking_feature, do: @content.active_users, else: "-" %>
+          </span>
         </strong>
 
         <strong class="text-white text-sm flex flex-col text-center font-chakra relative px-6 after:content-['*'] after:absolute after:top-[calc(50%-2px)] after:right-0 after:w-[5px] after:h-[5px] last:after:hidden">
-          Active Sessions <span class="text-gray-300 text-base"><%= @content.active_sessions %></span>
+          Active Sessions
+          <span class="text-gray-300 text-base">
+            <%= if @content.has_matchmaking_feature, do: @content.active_sessions, else: "-" %>
+          </span>
         </strong>
       </div>
 
@@ -90,19 +96,21 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListHeaderComponent do
         </div>
       </div>
 
-      <button
-        class="absolute top-[calc(50%-20px)] right-4"
-        title="Expand to toggle notifications and view matches"
-        phx-click="toggle_accordion"
-        phx-target={@myself}
-        phx-value={false}
-        id={"#{@id}_button"}
-      >
-        <span class="material-symbols-rounded !text-4xl text-white expand-more">expand_more</span>
-        <span class="material-symbols-rounded !text-4xl text-white expand-less !hidden">
-          expand_less
-        </span>
-      </button>
+      <%= if @content.has_matchmaking_feature or @content.serial === "MS-074" do %>
+        <button
+          class="absolute top-[calc(50%-20px)] right-4 bg-gray-800 rounded w-[40px] h-[40px]"
+          title="Expand to toggle notifications and view matches"
+          phx-click="toggle_accordion"
+          phx-target={@myself}
+          phx-value={false}
+          id={"#{@id}_button"}
+        >
+          <span class="material-symbols-rounded !text-4xl text-white expand-more">expand_more</span>
+          <span class="material-symbols-rounded !text-4xl text-white expand-less !hidden">
+            expand_less
+          </span>
+        </button>
+      <% end %>
     </div>
     """
   end

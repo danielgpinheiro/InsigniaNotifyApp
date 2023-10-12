@@ -361,13 +361,12 @@ defmodule InsigniaNotifyAppWeb.CoreComponents do
     """
   end
 
-  # All other inputs text, datetime-local, url, password, etc. are handled here...
   def input(%{type: "email"} = assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
       <.label for={@id}><%= @label %></.label>
       <input
-        type={@type}
+        type="text"
         name={@name}
         id={@id}
         value={Phoenix.HTML.Form.normalize_value(@type, @value)}
@@ -378,7 +377,13 @@ defmodule InsigniaNotifyAppWeb.CoreComponents do
           @errors != [] && "border-rose-400 focus:border-rose-400"
         ]}
         aria-labelledby="username-label"
-        autocomplete="email webauthn"
+        autocomplete="username webauthn"
+        aria-invalid="false"
+        autocorrect="off"
+        autocapitalize="off"
+        aria-required="true"
+        required="required"
+        spellcheck="false"
         autofocus
         {@rest}
       />
