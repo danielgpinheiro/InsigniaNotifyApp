@@ -53,7 +53,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
                   </label>
                 </div>
 
-                <div class="flex justify-between mb-6 opacity-0 pointer-events-none">
+                <div class="flex justify-between mb-6 !hidden">
                   <span class="font-base font-roboto text-gray-300">
                     Notify when sessions have new players
                   </span>
@@ -73,7 +73,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
                   </label>
                 </div>
 
-                <div class="flex justify-between mb-6 opacity-0 pointer-events-none">
+                <div class="flex justify-between mb-6 !hidden">
                   <span class="font-base font-roboto text-gray-300">
                     Notify when sessions have fewer players
                   </span>

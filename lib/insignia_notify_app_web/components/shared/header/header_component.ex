@@ -10,7 +10,7 @@ defmodule InsigniaNotifyAppWeb.Shared.Header.HeaderComponent do
       style="background: linear-gradient(150deg, rgb(20, 124, 26) 0%, rgb(141, 193, 3)"
     >
       <div class="flex items-center px-6">
-        <img src="/images/logo.png" class="w-[36px] lg:w-[48px]" alt="" />
+        <img src="/images/logo.png" class="w-[36px] lg:w-[48px] rounded-md" alt="" />
 
         <h1 class="ml-4 text-lg lg:text-xl font-chakra font-medium text-white">Insignia Notify</h1>
       </div>
