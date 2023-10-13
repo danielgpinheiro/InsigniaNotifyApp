@@ -48,7 +48,9 @@ defmodule InsigniaNotifyApp.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:webauthn_components, "~> 0.6.4"},
+      {:webauthn_components,
+       git: "https://github.com/danielgpinheiro/webauthn_components.git",
+       branch: "add-passkey-autofill"},
       {:floki, "~> 0.34.0"},
       {:httpoison, "~> 2.0"},
       {:goth, "~> 1.4.2"}

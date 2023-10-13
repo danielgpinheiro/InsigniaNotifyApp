@@ -21,7 +21,13 @@
             >
               E-mail
             </label>
-            <.input type="email" name="email" field={form[:email]} phx-debounce="250" />
+            <.input
+              type="email"
+              name="email"
+              field={form[:email]}
+              phx-debounce="250"
+              autocomplete="username webauthn"
+            />
           </div>
         </div>
 
