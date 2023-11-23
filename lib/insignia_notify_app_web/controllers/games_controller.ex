@@ -76,6 +76,14 @@ defmodule InsigniaNotifyAppWeb.GamesController do
     end
   end
 
+  def get_games_api(conn, _params) do
+    games = get_games()
+
+    conn
+    |> put_status(:ok)
+    |> json(%{games: games})
+  end
+
   defp parse_document({:ok, body}) do
     {_, games_table_rows_selector} =
       System.fetch_env("TABLE_ROWS_SELECTOR")

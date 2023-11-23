@@ -27,8 +27,6 @@ defmodule InsigniaNotifyAppWeb.Router do
 
     post "/session", SessionController, :create
     delete "/session", SessionController, :delete
-
-    get "/check-notifications", NotificationController, :check_to_send_notification
   end
 
   # Unprotected LiveViews
@@ -56,6 +54,12 @@ defmodule InsigniaNotifyAppWeb.Router do
     pipe_through :api
 
     get "/", WelcomeController, :index
+
+    get "/games", GamesController, :get_games_api
+  end
+
+  scope "/rss", InsigniaNotifyAppWeb do
+    get "/games/rss.xml", FeedController, :index
   end
 
   # Other scopes may use custom stacks.
