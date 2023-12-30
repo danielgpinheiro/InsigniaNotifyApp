@@ -13,7 +13,6 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
     <ul
       class="game-list w-full lg:w-11/12 max-w-[1140px] my-0 mx-auto px-4 lg:px-0 min-h-[500px]"
       id="list"
-      phx-hook="toggleAccordion"
     >
       <%= if length(@games) > 0 do %>
         <%= for item <- @games do %>

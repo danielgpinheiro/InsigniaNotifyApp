@@ -20,40 +20,22 @@ import "phoenix_html";
 // Establish Phoenix Socket and LiveView configuration.
 import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
-import {
-  SupportHook,
-  AuthenticationHook,
-  RegistrationHook,
-} from "webauthn_components";
 
 import topbar from "../vendor/topbar";
 
-import { requestNotificationPermission } from "../hooks/notification";
-import { playSound, play } from "../hooks/sound";
-import { toggleAccordion } from "../hooks/toggle_accordion";
-
-import { initializeApp } from "firebase/app";
-import { getMessaging, onMessage } from "firebase/messaging";
-import { firebaseConfig } from "./firebase-config";
+import hooks from "../hooks";
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
-  hooks: {
-    SupportHook,
-    AuthenticationHook,
-    RegistrationHook,
-    requestNotificationPermission,
-    playSound,
-    toggleAccordion,
-  },
+  hooks: hooks,
 });
 
 // Show progress bar on live navigation and form submits
 topbar.config({
-  barColors: { 0: "#8DC103", 0.5: "#63CA14" },
+  barColors: { 0: "#ccc", 0.5: "#fff" },
   shadowColor: "rgba(0, 0, 0, .3)",
 });
 window.addEventListener("phx:page-loading-start", (_info) => topbar.show(300));
@@ -67,19 +49,3 @@ liveSocket.connect();
 // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket;
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const messaging = getMessaging(app);
-
-onMessage(messaging, (payload) => {
-  const options = {
-    body: payload.notification.body,
-    icon: payload.notification.image,
-    badge: payload.notification.image,
-  };
-
-  play({ detail: payload.data.sound });
-
-  new Notification(payload.notification.title, options);
-});

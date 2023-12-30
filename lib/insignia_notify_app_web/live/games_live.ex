@@ -11,14 +11,10 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
 
   def render(assigns) do
     ~H"""
-    <section>
+    <section phx-hook="Fingerprint" id="games">
       <.live_component module={HeaderComponent} id={:header} />
 
-      <.live_component
-        module={RequestNotificationPermissionComponent}
-        id={:request_notification}
-        notification_params={@notification_params}
-      />
+      <.live_component module={RequestNotificationPermissionComponent} id={:request_notification} />
 
       <%!-- <.live_component module={FilterComponent} id={:filter_form} /> --%>
 
@@ -29,32 +25,25 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
     """
   end
 
-  def mount(_params, _session, socket) do
-    {
-      :ok,
-      socket
-      |> assign(stats: %{})
-      |> assign(notification_params: %{})
-      |> assign(current_user: %{id: "123"})
-    }
+  def mount(_, _, socket) do
+    if connected?(socket), do: send(self(), :visitorId)
+
+    {:ok, socket}
   end
 
-  def handle_event("notification-permissions", %{"params" => params}, socket) do
-    permissions = Map.get(params, "permissions")
-    firebase_user_token = Map.get(params, "firebaseUserToken")
+  def handle_info(:visitorId, socket) do
+    {:noreply, push_event(socket, "readVisitorId", %{})}
+  end
 
-    # send_update(RequestNotificationPermissionComponent,
-    #   id: :request_notification,
-    #   notification_params: permissions
-    # )
-
-    # FirebaseTokenController.change_firebase_token(%{
-    #   user_id: socket.assigns.current_user.id,
-    #   firebase_token: firebase_user_token
-    # })
-    IO.inspect(firebase_user_token)
-    IO.inspect(permissions)
-
-    {:noreply, socket}
+  def handle_event(
+        "readVisitorId",
+        %{"current_visitor_id" => current_visitor_id, "old_visitor_id" => old_visitor_id} =
+          _params,
+        socket
+      ) do
+    case current_visitor_id do
+      nil -> {:noreply, push_navigate(socket, to: ~p"/login", replace: true)}
+      _ -> {:noreply, socket}
+    end
   end
 end

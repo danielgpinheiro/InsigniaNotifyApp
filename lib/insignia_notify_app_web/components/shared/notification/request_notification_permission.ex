@@ -3,11 +3,15 @@ defmodule InsigniaNotifyAppWeb.Shared.Notification.RequestNotificationPermission
 
   def render(assigns) do
     ~H"""
-    <div class="fixed bottom-10 lg:bottom-0 right-0 z-10">
-      <%= if Map.get(@notification_params, "permission") != "granted" do %>
-        <div class=" p-2">
+    <div
+      phx-hook="RequestNotification"
+      id="request-notification-permission"
+      class="fixed bottom-10 lg:bottom-0 right-0 z-10"
+    >
+      <%= if Map.get(@permissions, "permission") != "granted" do %>
+        <div class="p-2">
           <div class="w-full lg:w-[300px] bg-[#fff4e5] rounded text-[#000]">
-            <%= if Map.get(@notification_params, "isIOSButNotInstalled") do %>
+            <%= if Map.get(@permissions, "isIOSButNotInstalled") do %>
               <div class="pb-4 px-3 pt-3">
                 <strong class="font-chakra">iOS install required</strong>
                 <br />
@@ -17,12 +21,12 @@ defmodule InsigniaNotifyAppWeb.Shared.Notification.RequestNotificationPermission
               </div>
             <% end %>
 
-            <%= if Map.get(@notification_params, "permission") == "default" and !Map.get(@notification_params, "isIOSButNotInstalled") do %>
+            <%= if Map.get(@permissions, "permission") == "default" and !Map.get(@permissions, "isIOSButNotInstalled") do %>
               <div class="pb-10 px-3 pt-3">
                 <strong class="font-chakra">Notifications are disabled</strong>
                 <br />
                 <span class="font-chakra">
-                  Grant your browser permission to display desktop notifications
+                  Grant your browser permission to display notifications
                 </span>
 
                 <br />
@@ -42,11 +46,11 @@ defmodule InsigniaNotifyAppWeb.Shared.Notification.RequestNotificationPermission
     """
   end
 
-  def update(%{notification_params: params} = _assigns, socket) do
-    socket =
-      socket
-      |> assign(notification_params: params)
+  def mount(socket) do
+    {:ok, socket |> assign(permissions: %{})}
+  end
 
-    {:ok, socket}
+  def handle_event("notification-permissions", permissions, socket) do
+    {:noreply, socket |> assign(permissions: permissions)}
   end
 end

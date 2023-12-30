@@ -54,7 +54,7 @@ defmodule InsigniaNotifyApp.Interval do
     Process.send_after(self(), :check_to_send_notification_to_users, interval_time + 10000)
 
     IO.puts("Check to Send Notification To Users Job Executed - #{clock}")
-    NotificationController.notification_job()
+    # NotificationController.notification_job()
 
     {:noreply, state}
   end

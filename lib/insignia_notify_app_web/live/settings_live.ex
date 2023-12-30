@@ -111,11 +111,6 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
       notification_params: permissions
     )
 
-    :ets.insert(
-      :user_data,
-      {"#{socket.assigns.current_user.id}", firebase_user_token}
-    )
-
     {:noreply, socket}
   end
 

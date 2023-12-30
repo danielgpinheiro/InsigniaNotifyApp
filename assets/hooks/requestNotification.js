@@ -1,5 +1,5 @@
 import { getToken, getMessaging } from "firebase/messaging";
-import { vapidKey } from "../js/firebase-config";
+import { vapidKey } from "./firebase/config";
 
 let self;
 
@@ -19,9 +19,7 @@ const isSupported = () =>
   "serviceWorker" in navigator &&
   "PushManager" in window;
 
-const pushEvent = async () => {
-  let token = "";
-
+const pushEvent = () => {
   const isIOSButNotInstalled =
     "serviceWorker" in navigator && window.navigator.standalone === false;
   const permission = isSupported() ? Notification.permission : "";
@@ -32,25 +30,21 @@ const pushEvent = async () => {
   };
 
   if (window.Notification && Notification.permission === "granted") {
-    const messaging = getMessaging();
-    token = await getToken(messaging, { vapidKey: vapidKey });
-    console.log("fbToken", token);
-    window.localStorage.setItem("fbToken", token);
+    generateFirebaseToken();
   }
 
-  self.pushEvent("notification-permissions", permissions);
+  self.pushEventTo(
+    "#request-notification-permission",
+    "notification-permissions",
+    permissions
+  );
 };
 
-export const requestNotificationPermission = {
-  mounted() {
-    window.addEventListener("requestNotificationPermission", () => {
-      requestPermission();
-    });
-
-    self = this;
-
-    pushEvent();
-  },
+const generateFirebaseToken = async () => {
+  const messaging = getMessaging();
+  const token = await getToken(messaging, { vapidKey: vapidKey });
+  console.log("token", token);
+  window.sessionStorage.setItem("fbToken", token);
 };
 
 const requestPermission = () => {
@@ -76,3 +70,17 @@ const requestPermission = () => {
     pushEvent();
   }
 };
+
+const requestNotification = {
+  mounted() {
+    window.addEventListener("requestNotificationPermission", () => {
+      requestPermission();
+    });
+
+    self = this;
+
+    pushEvent();
+  },
+};
+
+export default requestNotification;
