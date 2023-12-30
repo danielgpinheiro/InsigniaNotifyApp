@@ -35,7 +35,7 @@ defmodule InsigniaNotifyAppWeb.Shared.Header.HeaderComponent do
         </button>
       </div>
 
-      <.live_component module={AccountMenuComponent} id={:account_menu} current_user={@current_user} />
+      <%!-- <.live_component module={AccountMenuComponent} id={:account_menu} current_user={@current_user} /> --%>
     </header>
     """
   end

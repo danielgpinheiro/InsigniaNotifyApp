@@ -28,24 +28,34 @@ import {
 
 import topbar from "../vendor/topbar";
 
-import { requestNotificationPermission } from "../scripts/notification";
-import { playSound, play } from "../scripts/sound";
-import { toggleAccordion } from "../scripts/toggle_accordion";
+import { requestNotificationPermission } from "../hooks/notification";
+import { playSound, play } from "../hooks/sound";
+import { toggleAccordion } from "../hooks/toggle_accordion";
 
-import { initializeApp } from 'firebase/app';
+import { initializeApp } from "firebase/app";
 import { getMessaging, onMessage } from "firebase/messaging";
-import { firebaseConfig } from "./firebase-config"
+import { firebaseConfig } from "./firebase-config";
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
-  hooks: { SupportHook, AuthenticationHook, RegistrationHook, requestNotificationPermission, playSound, toggleAccordion },
+  hooks: {
+    SupportHook,
+    AuthenticationHook,
+    RegistrationHook,
+    requestNotificationPermission,
+    playSound,
+    toggleAccordion,
+  },
 });
 
 // Show progress bar on live navigation and form submits
-topbar.config({ barColors: { 0: "#8DC103", 0.5: "#63CA14" }, shadowColor: "rgba(0, 0, 0, .3)" });
+topbar.config({
+  barColors: { 0: "#8DC103", 0.5: "#63CA14" },
+  shadowColor: "rgba(0, 0, 0, .3)",
+});
 window.addEventListener("phx:page-loading-start", (_info) => topbar.show(300));
 window.addEventListener("phx:page-loading-stop", (_info) => topbar.hide());
 
@@ -68,8 +78,8 @@ onMessage(messaging, (payload) => {
     icon: payload.notification.image,
     badge: payload.notification.image,
   };
-  
-  play({ detail: payload.data.sound })
+
+  play({ detail: payload.data.sound });
 
   new Notification(payload.notification.title, options);
 });

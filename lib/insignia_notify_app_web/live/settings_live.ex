@@ -1,8 +1,6 @@
 defmodule InsigniaNotifyAppWeb.SettingsLive do
   use InsigniaNotifyAppWeb, :live_view
 
-  alias InsigniaNotifyApp.Identity
-
   alias InsigniaNotifyApp.Settings.Setting
   alias InsigniaNotifyAppWeb.SettingsController
 
@@ -119,18 +117,6 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
     )
 
     {:noreply, socket}
-  end
-
-  def handle_event("delete-account", _, socket) do
-    current_user = socket.assigns.current_user
-    user_id = current_user.id
-
-    Identity.delete(current_user)
-
-    user_id
-    |> Identity.delete_all_user_sessions()
-
-    {:noreply, push_navigate(socket, to: "/login", replace: true)}
   end
 
   def handle_event(

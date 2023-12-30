@@ -16,7 +16,7 @@ defmodule InsigniaNotifyApp.Interval do
     {interval_time, _} = Integer.parse(interval_time_string)
 
     Process.send_after(self(), :get_and_parse_job, interval_time)
-    Process.send_after(self(), :check_to_send_notification_to_users, interval_time + 10000)
+    # Process.send_after(self(), :check_to_send_notification_to_users, interval_time + 10000)
 
     GamesController.init()
 

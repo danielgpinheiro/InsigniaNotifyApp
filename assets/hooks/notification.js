@@ -1,5 +1,5 @@
 import { getToken, getMessaging } from "firebase/messaging";
-import { vapidKey } from "../js/firebase-config"
+import { vapidKey } from "../js/firebase-config";
 
 let self;
 
@@ -20,7 +20,7 @@ const isSupported = () =>
   "PushManager" in window;
 
 const pushEvent = async () => {
-  let token = ""
+  let token = "";
 
   const isIOSButNotInstalled =
     "serviceWorker" in navigator && window.navigator.standalone === false;
@@ -32,18 +32,13 @@ const pushEvent = async () => {
   };
 
   if (window.Notification && Notification.permission === "granted") {
-    const messaging = getMessaging()
-    token = await getToken(messaging, { vapidKey: vapidKey })
+    const messaging = getMessaging();
+    token = await getToken(messaging, { vapidKey: vapidKey });
+    console.log("fbToken", token);
+    window.localStorage.setItem("fbToken", token);
   }
 
-  if (window.location.pathname !== "/login") {
-    self.pushEvent("notification-params", {
-      params: {
-        permissions: permissions,
-        firebaseUserToken: token
-      }
-    });
-  }
+  self.pushEvent("notification-permissions", permissions);
 };
 
 export const requestNotificationPermission = {
@@ -51,8 +46,6 @@ export const requestNotificationPermission = {
     window.addEventListener("requestNotificationPermission", () => {
       requestPermission();
     });
-
-    tippy('[data-tippy-content]')
 
     self = this;
 
