@@ -1,6 +1,3 @@
-import { getToken, getMessaging } from "firebase/messaging";
-import { vapidKey } from "./firebase/config";
-
 let self;
 
 const toastOptions = {
@@ -19,7 +16,7 @@ const isSupported = () =>
   "serviceWorker" in navigator &&
   "PushManager" in window;
 
-const pushEvent = () => {
+const getNotificationPermission = () => {
   const isIOSButNotInstalled =
     "serviceWorker" in navigator && window.navigator.standalone === false;
   const permission = isSupported() ? Notification.permission : "";
@@ -29,27 +26,12 @@ const pushEvent = () => {
     permission: permission,
   };
 
-  if (window.Notification && Notification.permission === "granted") {
-    generateFirebaseToken();
-  }
-
-  self.pushEventTo(
-    "#request-notification-permission",
-    "notification-permissions",
-    permissions
-  );
-};
-
-const generateFirebaseToken = async () => {
-  const messaging = getMessaging();
-  const token = await getToken(messaging, { vapidKey: vapidKey });
-  console.log("token", token);
-  window.sessionStorage.setItem("fbToken", token);
+  self.pushEvent("notification-permissions", permissions);
 };
 
 const requestPermission = () => {
   if (window.Notification && Notification.permission === "granted") {
-    pushEvent();
+    getNotificationPermission();
   } else if (window.Notification && Notification.permission !== "denied") {
     Notification.requestPermission((status) => {
       if (status !== "granted") {
@@ -67,7 +49,7 @@ const requestPermission = () => {
       ...toastOptions,
     }).showToast();
 
-    pushEvent();
+    getNotificationPermission();
   }
 };
 
@@ -77,9 +59,11 @@ const requestNotification = {
       requestPermission();
     });
 
-    self = this;
+    window.addEventListener("phx:getNotificationPermission", () => {
+      getNotificationPermission();
+    });
 
-    pushEvent();
+    self = this;
   },
 };
 

@@ -1,29 +1,49 @@
-import { initializeApp } from "firebase/app";
-import { getMessaging, onMessage } from "firebase/messaging";
-import { firebaseConfig } from "./config";
+import { initialize } from "./initialize";
+import { generate } from "./token";
 
-import { play } from "../sound";
+let self = null;
+
+const readFbToken = () => {
+  const currentFbToken = window.sessionStorage.getItem("currentFbToken");
+  const oldFbToken = window.localStorage.getItem("oldFbToken");
+
+  console.log("currentFbToken", currentFbToken);
+  console.log("oldFbToken", oldFbToken);
+
+  self.pushEvent("generatedFbToken", {
+    current_fb_token: currentFbToken,
+    old_fb_token: oldFbToken,
+  });
+};
 
 const firebase = {
   mounted() {
-    const app = initializeApp(firebaseConfig);
-    const messaging = getMessaging(app);
-
-    onMessage(messaging, (payload) => {
-      const options = {
-        body: payload.notification.body,
-        // icon: payload.notification.image,
-        // badge: payload.notification.image,
-      };
-
-      console.log("payload brabo", payload);
-
-      new Notification(payload.notification.title, options);
-
-      // play({ detail: "juntos" });
-      // play({ detail: payload.data.sound });
+    window.addEventListener("phx:readFbToken", () => {
+      readFbToken();
     });
+
+    window.addEventListener("phx:generateFirebaseToken", () => {
+      generateFirebaseToken();
+    });
+
+    self = this;
+
+    initialize();
   },
+};
+
+export const generateFirebaseToken = async () => {
+  const token = await generate();
+  const currentFbToken = window.sessionStorage.getItem("currentFbToken");
+  const oldFbToken = window.localStorage.getItem("oldFbToken");
+
+  if (currentFbToken != token) {
+    window.sessionStorage.setItem("currentFbToken", token);
+  }
+
+  window.localStorage.setItem("oldFbToken", currentFbToken);
+
+  self.pushEvent("fbTokenCreated", token);
 };
 
 export default firebase;

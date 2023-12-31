@@ -2,8 +2,8 @@ defmodule InsigniaNotifyApp.FirebaseToken.Get do
   alias InsigniaNotifyApp.FirebaseToken.Token
   alias InsigniaNotifyApp.Repo
 
-  def get_by(user_id) do
-    case Repo.get_by(Token, user_id: user_id) do
+  def get_by(firebase_token) do
+    case Repo.get_by(Token, firebase_token: firebase_token) do
       nil -> {:error, :not_found}
       firebase_token -> {:ok, firebase_token}
     end

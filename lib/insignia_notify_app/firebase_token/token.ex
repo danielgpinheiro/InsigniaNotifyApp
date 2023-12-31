@@ -2,18 +2,17 @@ defmodule InsigniaNotifyApp.FirebaseToken.Token do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @primary_key {:id, Ecto.ULID, autogenerate: true}
+  @primary_key {:id, :binary_id, autogenerate: true}
   schema "firebase_token_users" do
-    field :firebase_token, :string
-    field :user_id, :string
+    field :token, :string
 
     timestamps()
   end
 
-  def changeset(firebase_toke \\ %__MODULE__{}, attrs) do
+  def changeset(firebase_token \\ %__MODULE__{}, attrs) do
     fields = __MODULE__.__schema__(:fields)
 
-    firebase_toke
+    firebase_token
     |> cast(attrs, fields)
   end
 end
