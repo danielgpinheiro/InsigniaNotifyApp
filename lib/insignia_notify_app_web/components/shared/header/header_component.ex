@@ -19,9 +19,9 @@ defmodule InsigniaNotifyAppWeb.Shared.Header.HeaderComponent do
           <%!-- <i class="material-symbols-rounded !text-[24px] text-white">notifications_off</i> --%>
         </button>
 
-        <button class="flex items-center justify-center w-[64px] h-[64px]">
+        <.link class="flex items-center justify-center w-[64px] h-[64px]" href={~p"/settings"}>
           <i class="material-symbols-rounded !text-[24px] text-white">settings</i>
-        </button>
+        </.link>
       </div>
     </header>
     """

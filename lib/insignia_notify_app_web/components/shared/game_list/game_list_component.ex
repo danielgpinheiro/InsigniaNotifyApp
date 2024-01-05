@@ -13,6 +13,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
     <ul
       class="game-list w-full lg:w-11/12 max-w-[1140px] my-0 mx-auto px-4 lg:px-0 min-h-[500px]"
       id="list"
+      phx-hook="Accordion"
     >
       <%= if length(@games) > 0 do %>
         <%= for item <- @games do %>
@@ -26,7 +27,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
               module={GameListContentComponent}
               id={"game_list_content_#{item.serial}"}
               content={item}
-              current_user={@current_user}
+              user_id={@user_id}
             />
           </li>
         <% end %>
@@ -46,13 +47,13 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
   end
 
   def update(%{action: :filter_game_list, filter: filter}, socket) do
-    user_id = socket.assigns.current_user.id
+    user_id = socket.assigns.user_id
 
     {:ok, socket |> assign(filter: filter) |> assign(games: get_games(user_id, filter))}
   end
 
   def update(%{action: :order_by_game_list}, socket) do
-    user_id = socket.assigns.current_user.id
+    user_id = socket.assigns.user_id
     filter = socket.assigns.filter
 
     {:ok, socket |> assign(games: get_games(user_id, filter))}
@@ -61,22 +62,21 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
   def update(%{action: :tick}, socket) do
     tick()
 
-    user_id = socket.assigns.current_user.id
+    user_id = socket.assigns.user_id
     filter = socket.assigns.filter
 
     {:ok, socket |> assign(games: get_games(user_id, filter))}
   end
 
   def update(
-        %{current_user: current_user} = _assigns,
+        %{user_id: user_id} = _assigns,
         socket
       ) do
     filter = socket.assigns.filter
-    user_id = current_user.id
 
     {:ok,
      socket
-     |> assign(current_user: current_user)
+     |> assign(user_id: user_id)
      |> assign(games: get_games(user_id, filter))}
   end
 

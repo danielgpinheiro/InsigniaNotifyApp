@@ -5,6 +5,7 @@ defmodule InsigniaNotifyApp.FirebaseToken.Token do
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "firebase_token_users" do
     field :token, :string
+    field :old_token, :string
 
     timestamps()
   end

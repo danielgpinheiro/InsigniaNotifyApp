@@ -5,6 +5,7 @@ defmodule InsigniaNotifyApp.Settings.Setting do
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "notification_settings" do
     field :notification_sound, :string
+    field :user_id, :string
 
     timestamps()
   end

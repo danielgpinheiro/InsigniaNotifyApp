@@ -9,7 +9,7 @@ defmodule InsigniaNotifyApp.Repo.Migrations.AddGameNotificationPreferences do
       add :end_sessions, :boolean
       add :new_players, :boolean
       add :fewer_players, :boolean
-      add :token, :string
+      add :user_id, :string
 
       timestamps()
     end

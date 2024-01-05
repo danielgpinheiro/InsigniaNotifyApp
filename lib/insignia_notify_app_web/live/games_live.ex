@@ -11,13 +11,21 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
   def render(assigns) do
     ~H"""
     <section id="games">
-      <.live_component module={HeaderComponent} id={:header} />
+      <%= if @loading do %>
+        <div class="w-full h-[100vh] relative flex justify-center items-center">
+          <img src="/images/loading.svg" class="w-20" />
+        </div>
+      <% end %>
 
-      <%!-- <.live_component module={FilterComponent} id={:filter_form} /> --%>
+      <%= if !@loading do %>
+        <.live_component module={HeaderComponent} id={:header} />
 
-      <%!-- <.live_component module={GameListComponent} id={:game_list} /> --%>
+        <%!-- <.live_component module={FilterComponent} id={:filter_form} user_id={@user_id} />
 
-      <FooterComponent.footer />
+        <.live_component module={GameListComponent} id={:game_list} user_id={@user_id} /> --%>
+
+        <FooterComponent.footer />
+      <% end %>
     </section>
     """
   end
@@ -25,7 +33,7 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
   def mount(_, _, socket) do
     if connected?(socket), do: send(self(), :check_fb_token)
 
-    {:ok, socket}
+    {:ok, socket |> assign(user_token: "") |> assign(loading: true)}
   end
 
   def handle_info(:check_fb_token, socket) do
@@ -39,8 +47,15 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
         socket
       ) do
     case current_fb_token do
-      nil -> {:noreply, push_navigate(socket, to: ~p"/login", replace: true)}
-      _ -> {:noreply, socket}
+      nil ->
+        {:noreply, push_navigate(socket, to: ~p"/login", replace: true)}
+
+      _ ->
+        IO.inspect("old_fb_token")
+        IO.inspect(old_fb_token)
+        IO.inspect("current_fb_token")
+        IO.inspect(current_fb_token)
+        {:noreply, socket |> assign(user_id: "abc") |> assign(loading: false)}
     end
   end
 end

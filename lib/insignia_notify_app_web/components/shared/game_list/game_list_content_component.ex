@@ -139,6 +139,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
   def mount(socket) do
     {:ok,
      socket
+     |> assign(content: %{})
      |> assign(matches: %{})
      |> assign(new_sessions: false)
      |> assign(end_sessions: false)
@@ -148,7 +149,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
 
   def update(%{action: :content_opened, opened: opened}, socket) do
     url = socket.assigns.content.url
-    user_id = socket.assigns.current_user.id
+    user_id = socket.assigns.user_id
     id = socket.assigns.id
 
     if opened do
@@ -184,10 +185,10 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
     end
   end
 
-  def update(%{current_user: current_user, content: content, id: id} = _assigns, socket) do
+  def update(%{user_id: user_id, content: content, id: id} = _assigns, socket) do
     {:ok,
      socket
-     |> assign(current_user: current_user)
+     |> assign(user_id: user_id)
      |> assign(content: content)
      |> assign(id: id)}
   end
@@ -201,7 +202,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
         params,
         socket
       ) do
-    user_id = socket.assigns.current_user.id
+    user_id = socket.assigns.user_id
     target = Enum.at(Map.get(params, "_target"), 0)
     notification_name = String.replace(target, "-#{socket.assigns.id}", "")
 

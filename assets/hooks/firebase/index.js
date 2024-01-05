@@ -41,7 +41,9 @@ export const generateFirebaseToken = async () => {
     window.sessionStorage.setItem("currentFbToken", token);
   }
 
-  window.localStorage.setItem("oldFbToken", currentFbToken);
+  if (oldFbToken != currentFbToken) {
+    window.localStorage.setItem("oldFbToken", currentFbToken);
+  }
 
   self.pushEvent("fbTokenCreated", token);
 };

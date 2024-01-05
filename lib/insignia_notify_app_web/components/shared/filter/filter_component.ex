@@ -13,7 +13,7 @@ defmodule InsigniaNotifyAppWeb.Shared.Filter.FilterComponent do
   def render(assigns) do
     ~H"""
     <div class="flex flex-col lg:w-[1140px] w-full mt-20 lg:mt-24 mb-5 mx-auto px-4 lg:px-0">
-      <.live_component module={FormComponent} id={:form} current_user={@current_user} />
+      <.live_component module={FormComponent} id={:form} />
 
       <div class="flex items-center justify-between lg:flex-row flex-col">
         <div class="lg:mb-0 mb-6 text-center">
@@ -64,22 +64,20 @@ defmodule InsigniaNotifyAppWeb.Shared.Filter.FilterComponent do
     update_stats(socket)
   end
 
-  def update(%{current_user: current_user} = _assigns, socket) do
-    user_id = current_user.id
-
+  def update(%{user_id: user_id} = _assigns, socket) do
     case FilterController.get_order_by_preferences_by_user_id(user_id) do
       {:ok, %Filter{order_by: order_by}} ->
         {
           :ok,
           socket
-          |> assign(:current_user, current_user)
+          |> assign(:user_id, user_id)
           |> assign(:order_by, order_by)
         }
 
       {:error, _} ->
         {:ok,
          socket
-         |> assign(:current_user, current_user)
+         |> assign(:user_id, user_id)
          |> assign(:order_by, "active_users")}
     end
   end
@@ -114,7 +112,7 @@ defmodule InsigniaNotifyAppWeb.Shared.Filter.FilterComponent do
         %{"_target" => ["order-by-preferences"], "order-by-preferences" => order_by},
         socket
       ) do
-    user_id = socket.assigns.current_user.id
+    user_id = socket.assigns.user_id
     FilterController.change_order_by(%{user_id: user_id, order_by: order_by})
 
     send_update(GameListComponent, %{
