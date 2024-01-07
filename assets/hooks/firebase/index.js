@@ -7,13 +7,15 @@ const readFbToken = () => {
   const currentFbToken = window.sessionStorage.getItem("currentFbToken");
   const oldFbToken = window.localStorage.getItem("oldFbToken");
 
-  console.log("currentFbToken", currentFbToken);
-  console.log("oldFbToken", oldFbToken);
-
   self.pushEvent("generatedFbToken", {
     current_fb_token: currentFbToken,
     old_fb_token: oldFbToken,
   });
+};
+
+const updateFbOldToken = (params) => {
+  window.localStorage.setItem("oldFbToken", params.detail.token);
+  window.location.reload(true);
 };
 
 const firebase = {
@@ -26,6 +28,10 @@ const firebase = {
       generateFirebaseToken();
     });
 
+    window.addEventListener("phx:updateFbOldToken", (params) => {
+      updateFbOldToken(params);
+    });
+
     self = this;
 
     initialize();
@@ -35,15 +41,12 @@ const firebase = {
 export const generateFirebaseToken = async () => {
   const token = await generate();
   const currentFbToken = window.sessionStorage.getItem("currentFbToken");
-  const oldFbToken = window.localStorage.getItem("oldFbToken");
 
   if (currentFbToken != token) {
     window.sessionStorage.setItem("currentFbToken", token);
   }
 
-  if (oldFbToken != currentFbToken) {
-    window.localStorage.setItem("oldFbToken", currentFbToken);
-  }
+  window.localStorage.setItem("oldFbToken", currentFbToken);
 
   self.pushEvent("fbTokenCreated", token);
 };

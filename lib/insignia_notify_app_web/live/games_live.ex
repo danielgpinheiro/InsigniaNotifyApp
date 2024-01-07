@@ -1,7 +1,7 @@
 defmodule InsigniaNotifyAppWeb.GamesLive do
   use InsigniaNotifyAppWeb, :live_view
 
-  alias InsigniaNotifyAppWeb.FirebaseTokenController
+  alias InsigniaNotifyAppWeb.TokenController
 
   alias InsigniaNotifyAppWeb.Shared.GameList.GameListComponent
   alias InsigniaNotifyAppWeb.Shared.Filter.FilterComponent
@@ -20,9 +20,9 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
       <%= if !@loading do %>
         <.live_component module={HeaderComponent} id={:header} />
 
-        <%!-- <.live_component module={FilterComponent} id={:filter_form} user_id={@user_id} />
+        <.live_component module={FilterComponent} id={:filter_form} user_id={@user_id} />
 
-        <.live_component module={GameListComponent} id={:game_list} user_id={@user_id} /> --%>
+        <.live_component module={GameListComponent} id={:game_list} user_id={@user_id} />
 
         <FooterComponent.footer />
       <% end %>
@@ -51,11 +51,11 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
         {:noreply, push_navigate(socket, to: ~p"/login", replace: true)}
 
       _ ->
-        IO.inspect("old_fb_token")
-        IO.inspect(old_fb_token)
-        IO.inspect("current_fb_token")
-        IO.inspect(current_fb_token)
-        {:noreply, socket |> assign(user_id: "abc") |> assign(loading: false)}
+        {status, user_id} = TokenController.check_token(old_fb_token, current_fb_token)
+
+        if status == :update,
+          do: {:noreply, push_event(socket, "updateFbOldToken", %{token: current_fb_token})},
+          else: {:noreply, socket |> assign(user_id: user_id) |> assign(loading: false)}
     end
   end
 end

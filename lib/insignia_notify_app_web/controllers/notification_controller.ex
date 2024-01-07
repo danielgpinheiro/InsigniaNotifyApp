@@ -1,7 +1,7 @@
 defmodule InsigniaNotifyAppWeb.NotificationController do
   use InsigniaNotifyAppWeb, :controller
 
-  alias InsigniaNotifyApp.FirebaseToken
+  alias InsigniaNotifyApp.Token
   alias InsigniaNotifyApp.Notifications
   alias InsigniaNotifyApp.Settings.Setting
   alias InsigniaNotifyAppWeb.Http.Api
@@ -43,94 +43,90 @@ defmodule InsigniaNotifyAppWeb.NotificationController do
   end
 
   def notification_job do
-    games = GamesController.get_games()
-    {_, tokens} = FirebaseToken.get_all()
+    {_, tokens} = Token.get_all()
 
     Enum.map(tokens, fn token ->
-      if token.firebase_token != nil do
-        IO.inspect("Firebase Token")
-        IO.inspect(token)
-        # check_to_send_notification(%{
-        #   user_id: token.user_id,
-        #   firebase_user_token: token.firebase_token,
-        #   games: games
-        # })
-      end
+      check_to_send_notification(%{
+        user_id: token.id,
+        firebase_user_token: token.user_token
+      })
     end)
   end
 
-  # defp check_to_send_notification(params) do
-  #   case Notifications.get_all_by_user_id(params.user_id) do
-  #     {:error, _} ->
-  #       {:ok}
+  defp check_to_send_notification(params) do
+    case Notifications.get_all_by_user_id(params.user_id) do
+      {:error, _} ->
+        {:ok}
 
-  #     {:ok, game_notifications} ->
-  #       notification_params = %{
-  #         user_token: params.firebase_user_token,
-  #         user_id: params.user_id,
-  #         server_token: Goth.fetch!(InsigniaNotifyApp.Goth).token
-  #       }
+      {:ok, game_notifications} ->
+        notification_params = %{
+          user_token: params.firebase_user_token,
+          user_id: params.user_id,
+          server_token: Goth.fetch!(InsigniaNotifyApp.Goth).token
+        }
 
-  #       Enum.map(game_notifications, fn game_notification ->
-  #         game =
-  #           Enum.find(params.games, fn game -> game.serial == game_notification.game_serial end)
+        games = GamesController.get_games()
 
-  #         if game.last_active_sessions < game.active_sessions and
-  #              game_notification.new_sessions do
-  #           notification_params
-  #           |> Map.put(
-  #             :body_message,
-  #             "\xF0\x9F\x86\x95 \xF0\x9F\x8E\xAE #{game.name} (#{game.serial}) has #{game.active_sessions} sessions now"
-  #           )
-  #           |> Map.put(:title_message, "New game session in Insignia")
-  #           |> Map.put(:thumbnail, game.thumbnail)
-  #           |> push_notification()
-  #         end
+        Enum.map(game_notifications, fn game_notification ->
+          game =
+            Enum.find(games, fn game -> game.serial == game_notification.game_serial end)
 
-  #         if game.last_active_sessions > game.active_sessions and
-  #              game_notification.end_sessions do
-  #           notification_params
-  #           |> Map.put(
-  #             :body_message,
-  #             "\xF0\x9F\x9A\xAB \xF0\x9F\x8E\xAE #{game.name} (#{game.serial}) no longer has active sessions"
-  #           )
-  #           |> Map.put(:title_message, "No more game session in this game")
-  #           |> Map.put(:thumbnail, game.thumbnail)
-  #           |> push_notification()
-  #         end
-  #       end)
-  #   end
-  # end
+          if game.last_active_sessions < game.active_sessions and
+               game_notification.new_sessions do
+            notification_params
+            |> Map.put(
+              :body_message,
+              "\xF0\x9F\x86\x95 \xF0\x9F\x8E\xAE #{game.name} (#{game.serial}) has #{game.active_sessions} sessions now"
+            )
+            |> Map.put(:title_message, "New game session in Insignia")
+            |> Map.put(:thumbnail, game.thumbnail)
+            |> push_notification()
+          end
 
-  # defp push_notification(params) do
-  #   sound =
-  #     case SettingsController.get_settings_by_user_id(params.user_id) do
-  #       {:ok, %Setting{notification_sound: notification_sound}} ->
-  #         notification_sound
+          if game.last_active_sessions > game.active_sessions and
+               game_notification.end_sessions do
+            notification_params
+            |> Map.put(
+              :body_message,
+              "\xF0\x9F\x9A\xAB \xF0\x9F\x8E\xAE #{game.name} (#{game.serial}) no longer has active sessions"
+            )
+            |> Map.put(:title_message, "No more game session in this game")
+            |> Map.put(:thumbnail, game.thumbnail)
+            |> push_notification()
+          end
+        end)
+    end
+  end
 
-  #       {:error, _} ->
-  #         "beep"
-  #     end
+  defp push_notification(params) do
+    sound =
+      case SettingsController.get_settings_by_user_id(params.user_id) do
+        {:ok, %Setting{notification_sound: notification_sound}} ->
+          notification_sound
 
-  #   url = "https://fcm.googleapis.com/v1/projects/insignia-notify/messages:send"
+        {:error, _} ->
+          "beep"
+      end
 
-  #   notification_body =
-  #     Jason.encode!(%{
-  #       message: %{
-  #         token: params.user_token,
-  #         notification: %{
-  #           body: params.body_message,
-  #           title: params.title_message,
-  #           image: params.thumbnail
-  #         },
-  #         data: %{
-  #           sound: sound
-  #         }
-  #       }
-  #     })
+    url = "https://fcm.googleapis.com/v1/projects/insignia-notify/messages:send"
 
-  #   headers = [Authorization: "Bearer #{params.server_token}"]
+    notification_body =
+      Jason.encode!(%{
+        message: %{
+          token: params.user_token,
+          notification: %{
+            body: params.body_message,
+            title: params.title_message,
+            image: params.thumbnail
+          },
+          data: %{
+            sound: sound
+          }
+        }
+      })
 
-  #   Api.post(url, notification_body, headers)
-  # end
+    headers = [Authorization: "Bearer #{params.server_token}"]
+
+    Api.post(url, notification_body, headers)
+  end
 end

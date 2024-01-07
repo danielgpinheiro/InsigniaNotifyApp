@@ -1,5 +1,5 @@
-defmodule InsigniaNotifyApp.FirebaseToken.Create do
-  alias InsigniaNotifyApp.FirebaseToken.Token
+defmodule InsigniaNotifyApp.Token.Create do
+  alias InsigniaNotifyApp.Token.Token
   alias InsigniaNotifyApp.Repo
 
   def call(params) do

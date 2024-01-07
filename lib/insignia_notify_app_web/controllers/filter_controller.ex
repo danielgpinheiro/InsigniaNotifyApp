@@ -4,7 +4,7 @@ defmodule InsigniaNotifyAppWeb.FilterController do
   alias InsigniaNotifyApp.Filters
 
   def change_order_by(params) do
-    case Filters.get_by(params.user_token) do
+    case Filters.get_by(params.user_id) do
       {:error, :not_found} ->
         Filters.create(params)
 
@@ -13,7 +13,7 @@ defmodule InsigniaNotifyAppWeb.FilterController do
     end
   end
 
-  def get_order_by_preferences_by_user_id(user_token) do
-    Filters.get_by(user_token)
+  def get_order_by_preferences_by_user_id(user_id) do
+    Filters.get_by(user_id)
   end
 end

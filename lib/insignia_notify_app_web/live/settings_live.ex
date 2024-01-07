@@ -3,6 +3,7 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
 
   alias InsigniaNotifyApp.Settings.Setting
   alias InsigniaNotifyAppWeb.SettingsController
+  alias InsigniaNotifyAppWeb.TokenController
 
   alias InsigniaNotifyAppWeb.Shared.Footer.FooterComponent
   alias InsigniaNotifyAppWeb.Shared.Notification.RequestNotificationPermissionComponent
@@ -78,7 +79,7 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
   def mount(_, _, socket) do
     if connected?(socket), do: send(self(), :check_fb_token)
 
-    {:ok, socket |> assign(user_token: "") |> assign(sound: "beep") |> assign(loading: true)}
+    {:ok, socket |> assign(user_id: "") |> assign(sound: "beep") |> assign(loading: true)}
   end
 
   def handle_info(:check_fb_token, socket) do
@@ -96,23 +97,28 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
         {:noreply, push_navigate(socket, to: ~p"/login", replace: true)}
 
       _ ->
-        get_settings(current_fb_token)
-        {:noreply, socket |> assign(user_token: current_fb_token) |> assign(loading: false)}
+        {status, user_id} = TokenController.check_token(old_fb_token, current_fb_token)
+
+        if status == :update do
+          {:noreply, push_event(socket, "updateFbOldToken", %{token: current_fb_token})}
+        else
+          case(SettingsController.get_settings_by_user_id(user_id)) do
+            {:ok, %Setting{notification_sound: notification_sound}} ->
+              {:noreply,
+               socket
+               |> assign(:sound, notification_sound)
+               |> assign(user_id: user_id)
+               |> assign(loading: false)}
+
+            {:error, _} ->
+              {:noreply,
+               socket
+               |> assign(:sound, "beep")
+               |> assign(user_id: user_id)
+               |> assign(loading: false)}
+          end
+        end
     end
-  end
-
-  defp get_settings(user_token) do
-    IO.inspect(user_token)
-    # case SettingsController.get_settings_by_user_id(user_token) do
-    #   {:ok, %Setting{notification_sound: notification_sound}} ->
-    #     {:ok, socket |> assign(:sound, notification_sound) |> assign(notification_params: %{})}
-
-    #   {:error, _} ->
-    #     {:ok,
-    #      socket
-    #      |> assign(:sound, "beep")
-    #      |> assign(notification_params: %{})}
-    # end
   end
 
   def handle_event(
@@ -120,8 +126,8 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
         %{"_target" => ["notification-sound"], "notification-sound" => sound},
         socket
       ) do
-    user_token = socket.assigns.user_token
-    SettingsController.change_settings(%{user_token: user_token, notification_sound: sound})
+    user_id = socket.assigns.user_id
+    SettingsController.change_settings(%{user_id: user_id, notification_sound: sound})
 
     {:noreply, socket |> assign(:sound, sound)}
   end
