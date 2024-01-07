@@ -7,7 +7,6 @@ defmodule InsigniaNotifyAppWeb.GamesController do
 
   def init do
     :ets.new(:stats, [:set, :named_table])
-    :ets.new(:user_data, [:set, :named_table, :public])
     :ets.new(:games, [:set, :named_table])
 
     get_and_parse()

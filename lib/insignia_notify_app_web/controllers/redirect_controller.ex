@@ -3,7 +3,7 @@ defmodule InsigniaNotifyAppWeb.RedirectController do
 
   def index(conn, _params) do
     conn
-    |> redirect(to: "/games")
+    |> redirect(to: "/login")
     |> halt()
   end
 end

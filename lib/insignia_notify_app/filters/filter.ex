@@ -2,13 +2,10 @@ defmodule InsigniaNotifyApp.Filters.Filter do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias InsigniaNotifyApp.Identity.User
-
-  @primary_key {:id, Ecto.ULID, autogenerate: true}
-  @foreign_key_type Ecto.ULID
+  @primary_key {:id, :binary_id, autogenerate: true}
   schema "order_by_preferences" do
     field :order_by, :string
-    belongs_to :user, User
+    field :user_id, :string
 
     timestamps()
   end
@@ -18,8 +15,5 @@ defmodule InsigniaNotifyApp.Filters.Filter do
 
     order_by_preferences
     |> cast(attrs, fields)
-    |> validate_required([:order_by])
-    |> unique_constraint(:user_id, name: :order_by_preferences_user_id_unique)
-    |> foreign_key_constraint(:user_id)
   end
 end

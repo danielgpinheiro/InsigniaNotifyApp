@@ -2,13 +2,10 @@ defmodule InsigniaNotifyApp.Settings.Setting do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias InsigniaNotifyApp.Identity.User
-
-  @primary_key {:id, Ecto.ULID, autogenerate: true}
-  @foreign_key_type Ecto.ULID
+  @primary_key {:id, :binary_id, autogenerate: true}
   schema "notification_settings" do
     field :notification_sound, :string
-    belongs_to :user, User
+    field :user_id, :string
 
     timestamps()
   end
@@ -19,7 +16,5 @@ defmodule InsigniaNotifyApp.Settings.Setting do
     notification_settings
     |> cast(attrs, fields)
     |> validate_required([:notification_sound])
-    |> unique_constraint(:user_id, name: :notification_settings_user_id_unique)
-    |> foreign_key_constraint(:user_id)
   end
 end

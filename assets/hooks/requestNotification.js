@@ -1,6 +1,3 @@
-import { getToken, getMessaging } from "firebase/messaging";
-import { vapidKey } from "../js/firebase-config"
-
 let self;
 
 const toastOptions = {
@@ -19,9 +16,7 @@ const isSupported = () =>
   "serviceWorker" in navigator &&
   "PushManager" in window;
 
-const pushEvent = async () => {
-  let token = ""
-
+const getNotificationPermission = () => {
   const isIOSButNotInstalled =
     "serviceWorker" in navigator && window.navigator.standalone === false;
   const permission = isSupported() ? Notification.permission : "";
@@ -31,38 +26,12 @@ const pushEvent = async () => {
     permission: permission,
   };
 
-  if (window.Notification && Notification.permission === "granted") {
-    const messaging = getMessaging()
-    token = await getToken(messaging, { vapidKey: vapidKey })
-  }
-
-  if (window.location.pathname !== "/login") {
-    self.pushEvent("notification-params", {
-      params: {
-        permissions: permissions,
-        firebaseUserToken: token
-      }
-    });
-  }
-};
-
-export const requestNotificationPermission = {
-  mounted() {
-    window.addEventListener("requestNotificationPermission", () => {
-      requestPermission();
-    });
-
-    tippy('[data-tippy-content]')
-
-    self = this;
-
-    pushEvent();
-  },
+  self.pushEvent("notification-permissions", permissions);
 };
 
 const requestPermission = () => {
   if (window.Notification && Notification.permission === "granted") {
-    pushEvent();
+    getNotificationPermission();
   } else if (window.Notification && Notification.permission !== "denied") {
     Notification.requestPermission((status) => {
       if (status !== "granted") {
@@ -80,6 +49,22 @@ const requestPermission = () => {
       ...toastOptions,
     }).showToast();
 
-    pushEvent();
+    getNotificationPermission();
   }
 };
+
+const requestNotification = {
+  mounted() {
+    window.addEventListener("requestNotificationPermission", () => {
+      requestPermission();
+    });
+
+    window.addEventListener("phx:getNotificationPermission", () => {
+      getNotificationPermission();
+    });
+
+    self = this;
+  },
+};
+
+export default requestNotification;

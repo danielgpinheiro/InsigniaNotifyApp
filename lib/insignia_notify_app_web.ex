@@ -92,7 +92,7 @@ defmodule InsigniaNotifyAppWeb do
       # Controllers
       import InsigniaNotifyAppWeb.GamesController
       import InsigniaNotifyAppWeb.FilterController
-      import InsigniaNotifyAppWeb.FirebaseTokenController
+      import InsigniaNotifyAppWeb.TokenController
       import InsigniaNotifyAppWeb.NotificationController
       import InsigniaNotifyAppWeb.SettingsController
 

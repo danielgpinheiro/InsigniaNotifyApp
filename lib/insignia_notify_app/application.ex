@@ -19,8 +19,6 @@ defmodule InsigniaNotifyApp.Application do
       InsigniaNotifyAppWeb.Telemetry,
       # Start the Ecto repository
       InsigniaNotifyApp.Repo,
-      # Start the UserTokenCleaner
-      {InsigniaNotifyApp.UserTokenCleaner, interval_minutes: 10080},
       # Start the PubSub system
       {Phoenix.PubSub, name: InsigniaNotifyApp.PubSub},
       # Start the Endpoint (http/https)

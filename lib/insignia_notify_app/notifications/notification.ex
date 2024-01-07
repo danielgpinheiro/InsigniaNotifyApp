@@ -2,7 +2,7 @@ defmodule InsigniaNotifyApp.Notifications.Notification do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @primary_key {:id, Ecto.ULID, autogenerate: true}
+  @primary_key {:id, :binary_id, autogenerate: true}
   schema "game_notification_preferences" do
     field :game_serial, :string
     field :new_sessions, :boolean

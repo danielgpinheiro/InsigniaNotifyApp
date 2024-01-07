@@ -1,8 +1,8 @@
 defmodule InsigniaNotifyAppWeb.GamesLive do
-  alias InsigniaNotifyAppWeb.FirebaseTokenController
   use InsigniaNotifyAppWeb, :live_view
 
-  alias InsigniaNotifyAppWeb.Shared.Notification.RequestNotificationPermissionComponent
+  alias InsigniaNotifyAppWeb.TokenController
+
   alias InsigniaNotifyAppWeb.Shared.GameList.GameListComponent
   alias InsigniaNotifyAppWeb.Shared.Filter.FilterComponent
   alias InsigniaNotifyAppWeb.Shared.Header.HeaderComponent
@@ -10,52 +10,52 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
 
   def render(assigns) do
     ~H"""
-    <section>
-      <.live_component module={HeaderComponent} id={:header} current_user={@current_user} />
+    <section id="games">
+      <%= if @loading do %>
+        <div class="w-full h-[100vh] relative flex justify-center items-center">
+          <img src="/images/loading.svg" class="w-20" />
+        </div>
+      <% end %>
 
-      <.live_component
-        module={RequestNotificationPermissionComponent}
-        id={:request_notification}
-        notification_params={@notification_params}
-      />
+      <%= if !@loading do %>
+        <.live_component module={HeaderComponent} id={:header} />
 
-      <.live_component
-        module={FilterComponent}
-        id={:filter_form}
-        current_user={@current_user}
-        stats={@stats}
-      />
+        <.live_component module={FilterComponent} id={:filter_form} user_id={@user_id} />
 
-      <.live_component module={GameListComponent} id={:game_list} current_user={@current_user} />
+        <.live_component module={GameListComponent} id={:game_list} user_id={@user_id} />
 
-      <FooterComponent.footer />
+        <FooterComponent.footer />
+      <% end %>
     </section>
     """
   end
 
-  def mount(_params, _session, socket) do
-    {
-      :ok,
-      socket
-      |> assign(stats: %{})
-      |> assign(notification_params: %{})
-    }
+  def mount(_, _, socket) do
+    if connected?(socket), do: send(self(), :check_fb_token)
+
+    {:ok, socket |> assign(user_token: "") |> assign(loading: true)}
   end
 
-  def handle_event("notification-params", %{"params" => params}, socket) do
-    permissions = Map.get(params, "permissions")
-    firebase_user_token = Map.get(params, "firebaseUserToken")
+  def handle_info(:check_fb_token, socket) do
+    {:noreply, push_event(socket, "readFbToken", %{})}
+  end
 
-    send_update(RequestNotificationPermissionComponent,
-      id: :request_notification,
-      notification_params: permissions
-    )
+  def handle_event(
+        "generatedFbToken",
+        %{"current_fb_token" => current_fb_token, "old_fb_token" => old_fb_token} =
+          _params,
+        socket
+      ) do
+    case current_fb_token do
+      nil ->
+        {:noreply, push_navigate(socket, to: ~p"/login", replace: true)}
 
-    FirebaseTokenController.change_firebase_token(%{
-      user_id: socket.assigns.current_user.id,
-      firebase_token: firebase_user_token
-    })
+      _ ->
+        {status, user_id} = TokenController.check_token(old_fb_token, current_fb_token)
 
-    {:noreply, socket}
+        if status == :update,
+          do: {:noreply, push_event(socket, "updateFbOldToken", %{token: current_fb_token})},
+          else: {:noreply, socket |> assign(user_id: user_id) |> assign(loading: false)}
+    end
   end
 end

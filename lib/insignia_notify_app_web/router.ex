@@ -1,12 +1,6 @@
 defmodule InsigniaNotifyAppWeb.Router do
   use InsigniaNotifyAppWeb, :router
 
-  (
-    alias InsigniaNotifyAppWeb.SessionHooks.AssignUser
-    alias InsigniaNotifyAppWeb.SessionHooks.RequireUser
-    import InsigniaNotifyAppWeb.SessionController, only: [fetch_current_user: 2]
-  )
-
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -14,37 +8,19 @@ defmodule InsigniaNotifyAppWeb.Router do
     plug :put_root_layout, html: {InsigniaNotifyAppWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug :fetch_current_user
   end
 
   pipeline :api do
     plug :accepts, ["json"]
   end
 
-  # HTTP controller routes
-  scope "/", InsigniaNotifyAppWeb do
-    pipe_through :browser
-
-    post "/session", SessionController, :create
-    delete "/session", SessionController, :delete
-  end
-
-  # Unprotected LiveViews
-  live_session :guest, on_mount: [AssignUser] do
+  live_session :default do
     scope "/", InsigniaNotifyAppWeb do
       pipe_through :browser
 
       get "/", RedirectController, :index
 
-      live "/login", LoginLive
-    end
-  end
-
-  # Protected LiveViews
-  live_session :authenticated, on_mount: [AssignUser, RequireUser] do
-    scope "/", InsigniaNotifyAppWeb do
-      pipe_through :browser
-
+      live "/login", LoginLive, :login
       live "/games", GamesLive, :games
       live "/settings", SettingsLive, :settings
     end
@@ -56,10 +32,6 @@ defmodule InsigniaNotifyAppWeb.Router do
     get "/", WelcomeController, :index
 
     get "/games", GamesController, :get_games_api
-  end
-
-  scope "/rss", InsigniaNotifyAppWeb do
-    get "/games/rss.xml", FeedController, :index
   end
 
   # Other scopes may use custom stacks.
