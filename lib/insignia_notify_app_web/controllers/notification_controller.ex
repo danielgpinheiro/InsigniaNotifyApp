@@ -44,11 +44,13 @@ defmodule InsigniaNotifyAppWeb.NotificationController do
 
   def notification_job do
     {_, tokens} = Token.get_all()
+    games = GamesController.get_games()
 
     Enum.map(tokens, fn token ->
       check_to_send_notification(%{
         user_id: token.id,
-        firebase_user_token: token.user_token
+        firebase_user_token: token.user_token,
+        games: games
       })
     end)
   end
@@ -65,11 +67,9 @@ defmodule InsigniaNotifyAppWeb.NotificationController do
           server_token: Goth.fetch!(InsigniaNotifyApp.Goth).token
         }
 
-        games = GamesController.get_games()
-
         Enum.map(game_notifications, fn game_notification ->
           game =
-            Enum.find(games, fn game -> game.serial == game_notification.game_serial end)
+            Enum.find(params.games, fn game -> game.serial == game_notification.game_serial end)
 
           if game.last_active_sessions < game.active_sessions and
                game_notification.new_sessions do
