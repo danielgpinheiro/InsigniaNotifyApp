@@ -6,7 +6,6 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
   alias InsigniaNotifyAppWeb.TokenController
 
   alias InsigniaNotifyAppWeb.Shared.Footer.FooterComponent
-  alias InsigniaNotifyAppWeb.Shared.Notification.RequestNotificationPermissionComponent
   alias InsigniaNotifyAppWeb.Shared.Header.HeaderComponent
 
   def render(assigns) do
@@ -19,9 +18,13 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
       <% end %>
 
       <%= if !@loading do %>
-        <.live_component module={HeaderComponent} id={:header} />
+        <.live_component module={HeaderComponent} id={:header} user_id={@user_id} goTo="games" />
 
-        <div class="w-[95%] lg:w-11/12 max-w-[1140px] bg-gray-700 mt-20 mx-auto rounded p-2 flex flex-col">
+        <div
+          phx-hook="Tooltip"
+          id="settings-inner"
+          class="w-[95%] lg:w-11/12 max-w-[1140px] bg-gray-700 mt-20 mx-auto rounded p-2 flex flex-col"
+        >
           <button
             class="flex items-center w-[100px] h-[48px] hover:bg-gray-600 rounded"
             phx-click={JS.navigate("/games")}
@@ -105,17 +108,25 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
           case(SettingsController.get_settings_by_user_id(user_id)) do
             {:ok, %Setting{notification_sound: notification_sound}} ->
               {:noreply,
-               socket
-               |> assign(:sound, notification_sound)
-               |> assign(user_id: user_id)
-               |> assign(loading: false)}
+               push_event(
+                 socket
+                 |> assign(:sound, notification_sound)
+                 |> assign(user_id: user_id)
+                 |> assign(loading: false),
+                 "initializeTooltip",
+                 %{}
+               )}
 
             {:error, _} ->
               {:noreply,
-               socket
-               |> assign(:sound, "beep")
-               |> assign(user_id: user_id)
-               |> assign(loading: false)}
+               push_event(
+                 socket
+                 |> assign(:sound, "beep")
+                 |> assign(user_id: user_id)
+                 |> assign(loading: false),
+                 "initializeTooltip",
+                 %{}
+               )}
           end
         end
     end

@@ -1,8 +1,6 @@
 defmodule InsigniaNotifyAppWeb.LoginLive do
   use InsigniaNotifyAppWeb, :live_view
 
-  alias InsigniaNotifyAppWeb.Shared.Notification.RequestNotificationPermissionComponent
-
   def render(assigns) do
     ~H"""
     <section

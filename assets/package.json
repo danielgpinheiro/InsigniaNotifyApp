@@ -2,6 +2,7 @@
   "dependencies": {
     "firebase": "^10.4.0",
     "install": "^0.13.0",
-    "npm": "^10.2.0"
+    "npm": "^10.2.0",
+    "tippy.js": "^6.3.7"
   }
 }

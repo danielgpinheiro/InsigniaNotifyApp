@@ -47,11 +47,17 @@ defmodule InsigniaNotifyAppWeb.NotificationController do
     games = GamesController.get_games()
 
     Enum.map(tokens, fn token ->
-      check_to_send_notification(%{
-        user_id: token.id,
-        firebase_user_token: token.user_token,
-        games: games
-      })
+      {_, value} = SettingsController.get_enabled_notifications_by_user_id(token.id)
+
+      enabled = if value == :not_found, do: true, else: value.enabled
+
+      if enabled do
+        check_to_send_notification(%{
+          user_id: token.id,
+          firebase_user_token: token.user_token,
+          games: games
+        })
+      end
     end)
   end
 

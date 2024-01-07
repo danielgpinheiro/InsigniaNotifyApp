@@ -10,7 +10,7 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
 
   def render(assigns) do
     ~H"""
-    <section id="games">
+    <section id="games" phx-hook="Tooltip">
       <%= if @loading do %>
         <div class="w-full h-[100vh] relative flex justify-center items-center">
           <img src="/images/loading.svg" class="w-20" />
@@ -18,7 +18,7 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
       <% end %>
 
       <%= if !@loading do %>
-        <.live_component module={HeaderComponent} id={:header} />
+        <.live_component module={HeaderComponent} id={:header} user_id={@user_id} goTo="settings" />
 
         <.live_component module={FilterComponent} id={:filter_form} user_id={@user_id} />
 
@@ -55,7 +55,13 @@ defmodule InsigniaNotifyAppWeb.GamesLive do
 
         if status == :update,
           do: {:noreply, push_event(socket, "updateFbOldToken", %{token: current_fb_token})},
-          else: {:noreply, socket |> assign(user_id: user_id) |> assign(loading: false)}
+          else:
+            {:noreply,
+             push_event(
+               socket |> assign(user_id: user_id) |> assign(loading: false),
+               "initializeTooltip",
+               %{}
+             )}
     end
   end
 end
