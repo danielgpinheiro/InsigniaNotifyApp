@@ -104,9 +104,10 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListHeaderComponent do
           phx-target={@myself}
           phx-value={false}
           id={"#{@id}_button"}
-          data-tippy-content="Manage Notifications and Matches"
         >
-          <span class="material-symbols-rounded !text-3xl text-white expand-more">more_horiz</span>
+          <span class="material-symbols-rounded !text-2xl text-white expand-more">
+            page_info
+          </span>
         </button>
       <% end %>
     </div>

@@ -2,8 +2,6 @@ defmodule InsigniaNotifyAppWeb.Shared.Header.HeaderComponent do
   alias InsigniaNotifyAppWeb.SettingsController
   use InsigniaNotifyAppWeb, :live_component
 
-  alias InsigniaNotifyAppWeb.SessionController
-
   def render(assigns) do
     ~H"""
     <header

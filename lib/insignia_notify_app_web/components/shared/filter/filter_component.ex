@@ -12,7 +12,7 @@ defmodule InsigniaNotifyAppWeb.Shared.Filter.FilterComponent do
 
   def render(assigns) do
     ~H"""
-    <div class="flex flex-col lg:w-[1140px] w-full mt-20 lg:mt-24 mb-5 mx-auto px-4 lg:px-0">
+    <div class="flex flex-col xl:w-[1140px] w-full mt-20 xl:mt-24 mb-5 mx-auto px-4 xl:px-0">
       <.live_component module={FormComponent} id={:form} />
 
       <div class="flex items-center justify-between lg:flex-row flex-col">

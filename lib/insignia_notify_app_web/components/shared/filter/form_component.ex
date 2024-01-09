@@ -8,8 +8,8 @@ defmodule InsigniaNotifyAppWeb.Shared.Filter.FormComponent do
   def render(assigns) do
     ~H"""
     <form class="w-full">
-      <div class="flex flex-wrap -mx-3 lg:mb-6 mb-0">
-        <div class="w-full lg:w-1/2 px-3 mb-6 md:mb-0">
+      <div class="flex flex-wrap -mx-3 xl:mb-6 mb-0">
+        <div class="w-full xl:w-1/2 px-3 mb-6 md:mb-0">
           <label
             class="block uppercase tracking-wide text-white text-xs font-bold font-chakra mb-2"
             for="grid-first-name"
