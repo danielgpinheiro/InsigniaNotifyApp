@@ -10,40 +10,40 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
 
   def render(assigns) do
     ~H"""
-    <ul
-      class="game-list w-full lg:w-11/12 max-w-[1140px] my-0 mx-auto px-4 lg:px-0 min-h-[500px]"
-      id="list"
-      phx-hook="Accordion"
-    >
-      <%= if length(@games) > 0 do %>
-        <%= for item <- @games do %>
-          <li class="w-full flex flex-col bg-gray-700 rounded accordion overflow-hidden mb-5">
-            <.live_component
-              module={GameListHeaderComponent}
-              id={"game_list_header_#{item.serial}"}
-              content={item}
-            />
-            <.live_component
-              module={GameListContentComponent}
-              id={"game_list_content_#{item.serial}"}
-              content={item}
-              user_id={@user_id}
-            />
-          </li>
+    <div>
+      <ul
+        class="game-list w-full lg:w-11/12 max-w-[1140px] my-0 mx-auto px-4 lg:px-0 min-h-[500px]"
+        id="list"
+      >
+        <%= if length(@games) > 0 do %>
+          <%= for item <- @games do %>
+            <li class="w-full flex flex-col bg-gray-700 rounded accordion overflow-hidden mb-5">
+              <.live_component
+                module={GameListHeaderComponent}
+                id={"game_list_header_#{item.serial}"}
+                content={item}
+              />
+            </li>
+          <% end %>
+        <% else %>
+          <h1 class="text-white text-2xl  font-chakra text-center py-10">
+            No games found with this filter
+          </h1>
         <% end %>
-      <% else %>
-        <h1 class="text-white text-2xl  font-chakra text-center py-10">
-          No games found with this filter
-        </h1>
-      <% end %>
-    </ul>
+      </ul>
+
+      <.live_component module={GameListContentComponent} id={:game_list_content} user_id={@user_id} />
+    </div>
     """
   end
 
   def mount(socket) do
     if connected?(socket), do: tick()
 
-    {:ok, socket |> assign(filter: "") |> assign(games: get_games("", ""))}
+    {:ok,
+     socket
+     |> assign(filter: "")
+     |> assign(games: get_games("", ""))}
   end
 
   def update(%{action: :filter_game_list, filter: filter}, socket) do
@@ -78,10 +78,6 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListComponent do
      socket
      |> assign(user_id: user_id)
      |> assign(games: get_games(user_id, filter))}
-  end
-
-  def update(_assigns, socket) do
-    {:ok, socket}
   end
 
   defp get_games(user_id, filter) do

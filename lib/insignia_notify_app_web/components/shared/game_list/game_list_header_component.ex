@@ -98,17 +98,15 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListHeaderComponent do
 
       <%= if @content.has_matchmaking_feature or @content.serial === "MS-074" do %>
         <button
-          class="absolute top-[calc(50%-20px)] right-4 bg-gray-800 rounded w-[40px] h-[40px]"
+          class="absolute top-[calc(50%-20px)] right-4 bg-gray-800 rounded w-[40px] h-[40px] flex justify-center items-center"
           title="Expand to toggle notifications and view matches"
-          phx-click="toggle_accordion"
+          phx-click="show_modal"
           phx-target={@myself}
           phx-value={false}
           id={"#{@id}_button"}
+          data-tippy-content="Manage Notifications and Matches"
         >
-          <span class="material-symbols-rounded !text-4xl text-white expand-more">expand_more</span>
-          <span class="material-symbols-rounded !text-4xl text-white expand-less !hidden">
-            expand_less
-          </span>
+          <span class="material-symbols-rounded !text-3xl text-white expand-more">more_horiz</span>
         </button>
       <% end %>
     </div>
@@ -116,13 +114,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListHeaderComponent do
   end
 
   def mount(socket) do
-    {:ok, socket |> assign(toggle_opened: false)}
-  end
-
-  def update(%{action: :set_toggle_opened}, socket) do
-    toggle_opened = socket.assigns.toggle_opened
-
-    {:ok, socket |> assign(toggle_opened: !toggle_opened)}
+    {:ok, socket}
   end
 
   def update(%{content: content, id: id} = _assigns, socket) do
@@ -134,24 +126,17 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListHeaderComponent do
   end
 
   def handle_event(
-        "toggle_accordion",
+        "show_modal",
         _,
         socket
       ) do
-    button_id = "##{socket.assigns.id}_button"
-    game_content_id = String.replace(socket.assigns.id, "header", "content")
-    toggle_opened = socket.assigns.toggle_opened
+    content = socket.assigns.content
 
     send_update(
       GameListContentComponent,
-      %{id: game_content_id, action: :content_opened, opened: !toggle_opened}
+      %{id: :game_list_content, action: :content_opened, game_content: content}
     )
 
-    send_update(
-      __MODULE__,
-      %{id: socket.assigns.id, action: :set_toggle_opened}
-    )
-
-    {:noreply, push_event(socket, "toggleAccordion", %{id: button_id})}
+    {:noreply, socket}
   end
 end
