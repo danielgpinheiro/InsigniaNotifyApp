@@ -7,9 +7,7 @@
 # General application configuration
 import Config
 
-config :insignia_notify_app, :base_url, System.fetch_env("BASE_URL")
-config :insignia_notify_app, :games_table_rows_selector, System.fetch_env("TABLE_ROWS_SELECTOR")
-config :insignia_notify_app, :stats_selector, System.fetch_env("STATS_SELECTOR")
+config :insignia_notify_app, :job_url, System.fetch_env("JOB_URL")
 config :insignia_notify_app, :interval_time, System.fetch_env("INTERVAL_TIME")
 
 config :insignia_notify_app,
