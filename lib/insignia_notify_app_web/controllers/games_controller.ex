@@ -39,10 +39,7 @@ defmodule InsigniaNotifyAppWeb.GamesController do
 
     case Api.get("#{job_url}/api/game_match?url=#{url}") do
       {:ok, body} ->
-        json = Jason.decode!(body)
-
-        matches =
-          convert_json_to_map_with_atoms(json)
+        {:ok, Jason.decode!(body) |> convert_json_to_map_with_atoms()}
 
       {:error, _} ->
         {:error, :internal_server_error}

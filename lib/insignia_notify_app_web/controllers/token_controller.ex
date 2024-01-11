@@ -4,7 +4,7 @@ defmodule InsigniaNotifyAppWeb.TokenController do
   alias InsigniaNotifyApp.Token
 
   def check_token(old_token, current_token) do
-    if old_token != current_token and old_token != "null" do
+    if old_token != current_token and old_token != "null" and !is_nil(old_token) do
       case Token.get_by_old_token(old_token) do
         {:error, :not_found} ->
           {:update, nil}
