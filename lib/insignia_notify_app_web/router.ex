@@ -30,8 +30,6 @@ defmodule InsigniaNotifyAppWeb.Router do
     pipe_through :api
 
     get "/", WelcomeController, :index
-
-    get "/games", GamesController, :get_games_api
   end
 
   # Other scopes may use custom stacks.

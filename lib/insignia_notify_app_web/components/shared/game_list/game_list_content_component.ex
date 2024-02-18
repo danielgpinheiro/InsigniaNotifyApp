@@ -28,7 +28,6 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
 
                         <label class="slideon">
                           <input
-                            disabled={!Map.has_key?(@matches, :head)}
                             id={"new_sessions-#{@id}"}
                             type="checkbox"
                             name={"new_sessions-#{@id}"}
@@ -49,7 +48,6 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
 
                         <label class="slideon">
                           <input
-                            disabled={!Map.has_key?(@matches, :head)}
                             id={"end_sessions-#{@id}"}
                             type="checkbox"
                             name={"end_sessions-#{@id}"}
@@ -71,7 +69,7 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
                   </h3>
 
                   <%= if Map.has_key?(@matches, :head) do %>
-                    <div class="max-h-[200px] overflow-y-scroll relative pr-6 lg:pr-0">
+                    <div class="max-h-[200px] overflow-y-scroll overflow-x-hidden relative pr-6 lg:pr-0">
                       <ul class="table border-collapse table-fixed w-full ml-5">
                         <li class="table-row">
                           <%= for head <- @matches.head do %>
@@ -119,7 +117,13 @@ defmodule InsigniaNotifyAppWeb.Shared.GameList.GameListContentComponent do
     game_serial = game_content.serial
 
     matches =
-      GamesController.get_game_matches(url)
+      case GamesController.get_game_matches(url) do
+        {:ok, params} ->
+          params
+
+        {:error, _} ->
+          %{}
+      end
 
     notification_params =
       case NotificationController.get_game_notification(%{

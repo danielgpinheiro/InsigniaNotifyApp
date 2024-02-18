@@ -9,6 +9,9 @@ defmodule InsigniaNotifyAppWeb.Http.Api do
       {:ok, %HTTPoison.Response{status_code: 404}} ->
         HandleResponse.response(:error, :not_found)
 
+      {:ok, %HTTPoison.Response{status_code: 500}} ->
+        HandleResponse.response(:error, :internal_server_error)
+
       {:error, %HTTPoison.Error{reason: reason}} ->
         HandleResponse.response(:error, reason)
     end
@@ -21,6 +24,9 @@ defmodule InsigniaNotifyAppWeb.Http.Api do
 
       {:ok, %HTTPoison.Response{status_code: 404}} ->
         HandleResponse.response(:error, :not_found)
+
+      {:ok, %HTTPoison.Response{status_code: 500}} ->
+        HandleResponse.response(:error, :internal_server_error)
 
       {:error, %HTTPoison.Error{reason: reason}} ->
         HandleResponse.response(:error, reason)
