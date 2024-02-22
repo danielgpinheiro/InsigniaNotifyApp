@@ -1,13 +1,13 @@
 import { initialize } from "./initialize";
 import { generate } from "./token";
 
-let self = null;
+let _this;
 
 const readFbToken = () => {
   const currentFbToken = window.sessionStorage.getItem("currentFbToken");
   const oldFbToken = window.localStorage.getItem("oldFbToken");
 
-  self.pushEvent("generatedFbToken", {
+  _this.pushEvent("generatedFbToken", {
     current_fb_token: currentFbToken,
     old_fb_token: oldFbToken,
   });
@@ -15,7 +15,7 @@ const readFbToken = () => {
 
 const updateFbOldToken = (params) => {
   window.localStorage.setItem("oldFbToken", params.detail.token);
-  window.location.reload(true);
+  window.location.reload();
 };
 
 const firebase = {
@@ -32,7 +32,7 @@ const firebase = {
       updateFbOldToken(params);
     });
 
-    self = this;
+    _this = this;
 
     initialize();
   },
@@ -46,9 +46,9 @@ export const generateFirebaseToken = async () => {
     window.sessionStorage.setItem("currentFbToken", token);
   }
 
-  window.localStorage.setItem("oldFbToken", currentFbToken);
+  window.localStorage.setItem("oldFbToken", currentFbToken ?? "");
 
-  self.pushEvent("fbTokenCreated", token);
+  _this.pushEvent("fbTokenCreated", token);
 };
 
 export default firebase;

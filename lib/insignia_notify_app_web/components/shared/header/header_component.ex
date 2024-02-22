@@ -26,7 +26,7 @@ defmodule InsigniaNotifyAppWeb.Shared.Header.HeaderComponent do
           </i>
         </button>
 
-        <.link class="flex items-center justify-center w-[64px] h-[64px]" href={~p"/#{@goTo}"}>
+        <.link class="flex items-center justify-center w-[64px] h-[64px]" href={~p"/settings"}>
           <i class="material-symbols-rounded !text-[24px] text-white">settings</i>
         </.link>
       </div>

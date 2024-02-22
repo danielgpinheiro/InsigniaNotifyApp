@@ -20,14 +20,14 @@ import "phoenix_html";
 // Establish Phoenix Socket and LiveView configuration.
 import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
+import topbar from "topbar";
 
-import topbar from "../vendor/topbar";
 import hooks from "../hooks";
 
-let csrfToken = document
-  .querySelector("meta[name='csrf-token']")
+const csrfToken = document
+  .querySelector("meta[name='csrf-token']")!
   .getAttribute("content");
-let liveSocket = new LiveSocket("/live", Socket, {
+const liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
   hooks: hooks,
 });
@@ -47,4 +47,10 @@ liveSocket.connect();
 // >> liveSocket.enableDebug()
 // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
 // >> liveSocket.disableLatencySim()
+declare global {
+  interface Window {
+    liveSocket: LiveSocket;
+  }
+}
+
 window.liveSocket = liveSocket;

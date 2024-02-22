@@ -41,5 +41,5 @@ npm-debug.log
 
 # Firebase Files
 /priv/static/firebase-config.js
-/assets/hooks/firebase/config.js
+/assets/hooks/firebase/config.ts
 

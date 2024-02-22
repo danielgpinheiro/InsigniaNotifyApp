@@ -1,3 +1,6 @@
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css";
+
 let self;
 
 const toastOptions = {
@@ -18,7 +21,7 @@ const isSupported = () =>
 
 const getNotificationPermission = () => {
   const isIOSButNotInstalled =
-    "serviceWorker" in navigator && window.navigator.standalone === false;
+    "serviceWorker" in navigator && window.navigator["standalone"] === false;
   const permission = isSupported() ? Notification.permission : "";
 
   const permissions = {
@@ -41,7 +44,7 @@ const requestPermission = () => {
         }).showToast();
       }
 
-      window.location.reload(true);
+      window.location.reload();
     });
   } else {
     Toastify({

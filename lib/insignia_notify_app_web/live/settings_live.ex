@@ -25,13 +25,15 @@ defmodule InsigniaNotifyAppWeb.SettingsLive do
           id="settings-inner"
           class="w-[95%] lg:w-11/12 max-w-[1140px] bg-gray-700 mt-20 mx-auto rounded p-2 flex flex-col"
         >
-          <button
+          <.link
             class="flex items-center w-[100px] h-[48px] hover:bg-gray-600 rounded"
-            phx-click={JS.navigate("/games")}
+            href={~p"/games"}
           >
-            <i class="material-symbols-rounded text-white w-10 text-center">arrow_back</i>
+            <i class="material-symbols-rounded text-white w-10 text-center">
+              arrow_back
+            </i>
             <span class="text-white pl-2">Back</span>
-          </button>
+          </.link>
 
           <div class="w-full lg:w-[50%] flex flex-col p-6 pr-20 lg:pr-6 relative">
             <h3 class="text-white text-2xl mb-5">Notifications</h3>

@@ -1,7 +1,9 @@
 import { initializeApp } from "firebase/app";
 import { getMessaging, onMessage } from "firebase/messaging";
-import { firebaseConfig } from "./config";
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css";
 
+import { firebaseConfig } from "./config";
 import { play } from "../sound";
 
 export let messaging;
@@ -23,20 +25,20 @@ export const initialize = () => {
 
   onMessage(messaging, (payload) => {
     const options = {
-      body: payload.notification.body,
-      icon: payload.notification.image,
-      badge: payload.notification.image,
+      body: payload?.notification?.body,
+      icon: payload?.notification?.image,
+      badge: payload?.notification?.image,
     };
 
     if (document.hasFocus()) {
       Toastify({
-        text: payload.notification.body,
+        text: payload?.notification?.body,
         ...toastOptions,
       }).showToast();
 
       play({ detail: "juntos" });
     } else {
-      new Notification(payload.notification.title, options);
+      new Notification(payload?.notification?.title ?? "", options);
     }
   });
 };

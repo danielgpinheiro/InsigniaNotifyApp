@@ -3,7 +3,7 @@ import RequestNotification from "./requestNotification";
 import Sound from "./sound";
 import Tooltip from "./tooltip";
 
-let hooks = {
+const hooks = {
   Firebase,
   RequestNotification,
   Sound,

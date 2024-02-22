@@ -27,7 +27,7 @@ config :insignia_notify_app, InsigniaNotifyAppWeb.Endpoint,
 config :esbuild,
   version: "0.17.11",
   default: [
-    args: ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets),
+    args: ~w(js/app.ts --bundle --target=es2017 --outdir=../priv/static/assets),
     cd: Path.expand("../assets", __DIR__),
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
